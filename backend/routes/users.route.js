@@ -1,14 +1,15 @@
 const express = require("express");
+
 const router = express.Router();
 
 // Import model
-const sewerModel = require('../models/sewer.model');
+const userModel = require('../models/user.model');
 
 
 router.get('/', async (req, res) => {
     try {
-        const sewers = await sewerModel.find();
-        res.json(sewers);
+        const users = await userModel.find();
+        res.json(users);
     } catch(err) {
         res.json({message: err});
     }
@@ -16,13 +17,13 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const sewer = new SewerModel( {
+        const user = new userModel( {
             name: req.body.name,
             description: req.body.description
         });
 
-        const savedSewer = await sewer.save();
-        res.json(savedSewer);
+        const savedUser = await user.save();
+        res.json(savedUser);
     } catch(err) {
         res.json({message: err});
     }
