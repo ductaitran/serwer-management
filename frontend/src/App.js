@@ -3,7 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 
 import './App.css';
 
-import SignInPage from './pages/sign-in/sign-in.component';
+import SignInPage from './pages/sign-in/sign-in-page.component';
 
 // Fake Route, will be replaced with real component later
 const HomePage = () => (
