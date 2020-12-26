@@ -2,31 +2,16 @@ const express = require("express");
 
 const router = express.Router();
 
-// Import model
-const userModel = require('../models/user.model');
+// Import controller
+const userController = require('../controllers/users.controller');
 
+// Get routes
+router.get('/', userController.getAll);
 
-router.get('/', async (req, res) => {
-    try {
-        const users = await userModel.find();
-        res.json(users);
-    } catch(err) {
-        res.json({message: err});
-    }
-});
+// Post routes
+router.post('/:sewerId', userController.addUser);
 
-router.post('/', async (req, res) => {
-    try {
-        const user = new userModel( {
-            name: req.body.name,
-            description: req.body.description
-        });
-
-        const savedUser = await user.save();
-        res.json(savedUser);
-    } catch(err) {
-        res.json({message: err});
-    }
-})
+// Delete routes
+router.delete('/sewerId', userController.deleteUser);
 
 module.exports = router;
