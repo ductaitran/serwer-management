@@ -3,7 +3,8 @@ import { Switch, Route } from 'react-router-dom';
 
 import './App.css';
 
-import SignInPage from './pages/sign-in/sign-in-page.component';
+import Header from './components/header/header.component';
+import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 
 // Fake Route, will be replaced with real component later
 const HomePage = () => (
@@ -14,10 +15,11 @@ const HomePage = () => (
 
 function App() {
   return (
-    <div className="App">
+    <div>
+      <Header />
       <Switch>
         <Route exact path='/' component={HomePage} />
-        <Route path='/signin' component={SignInPage} />
+        <Route path='/signin' component={SignInAndSignUpPage} />
       </Switch>
     </div>
   );
