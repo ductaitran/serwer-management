@@ -7,11 +7,13 @@ const userController = require('../controllers/users.controller');
 
 // Get routes
 router.get('/', userController.getAll);
+router.get('/:userEmail', userController.getOne);
+
 
 // Post routes
-router.post('/:sewerId', userController.addUser);
+router.post('/', userController.addUser);
 
 // Delete routes
-router.delete('/sewerId', userController.deleteUser);
+router.delete('/:userEmail', userController.deleteUser);
 
 module.exports = router;
