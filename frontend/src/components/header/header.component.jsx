@@ -5,7 +5,7 @@ import { ReactComponent as Logo } from '../../assets/router.svg';
 
 import './header.styles.scss';
 
-const Header = () => (
+const Header = ({ currentUser }) => (
     <div className='header'>
         <Link className='logo-container' to='/'>
             <Logo className='logo' />
@@ -18,11 +18,19 @@ const Header = () => (
                 Schedule
             </Link>
             <Link className='option' to='/contact'>
-                Contact 
+                Contact
             </Link>
-            <Link className='option' to='/signin'>
-                Sign In 
-            </Link>
+            
+        {/* check if user logged in or not */}
+            {
+                currentUser ?
+                    (<div className='option' onClick={() => {console.log('sign out')}}>Sign Out</div>)
+                    :
+                    (<Link className='option' to='/signin'>
+                        Sign In
+                    </Link>)
+            }
+
         </div>
     </div>
 )

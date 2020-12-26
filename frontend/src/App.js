@@ -13,16 +13,26 @@ const HomePage = () => (
   </div>
 )
 
-function App() {
-  return (
-    <div>
-      <Header />
-      <Switch>
-        <Route exact path='/' component={HomePage} />
-        <Route path='/signin' component={SignInAndSignUpPage} />
-      </Switch>
-    </div>
-  );
+class App extends React.Component {
+  constructor() {
+    super();
+
+    this.state = {
+      currentUser: null
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <Header currentUser={this.state.currentUser} />
+        <Switch>
+          <Route exact path='/' component={HomePage} />
+          <Route path='/signin' component={SignInAndSignUpPage} />
+        </Switch>        
+      </div>
+    )
+  }
 }
 
 export default App;
