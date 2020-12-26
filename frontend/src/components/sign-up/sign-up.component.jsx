@@ -4,6 +4,9 @@ import { CustomButton } from '../custom-button/custom-button.component';
 
 import './sign-up.styles.scss';
 
+// npm modules
+const tata = require('tata-js');
+
 class SignUp extends React.Component {
     constructor() {
         super();
@@ -21,8 +24,10 @@ class SignUp extends React.Component {
 
         const {displayName, name, password, confirmPassword} = this.state;
 
-        if (password !== confirmPassword) {
-            alert("Password not match!");
+        if (password !== confirmPassword) {            
+            tata.error('Error', 'Password not match!', {
+                animate: 'slide'
+            })
             return;
         }
 
@@ -30,7 +35,8 @@ class SignUp extends React.Component {
     }
 
     handleChange = event => {
-
+        const { value, name } = event.target;
+        this.setState({ [name]: value })
     }
 
     render() {
