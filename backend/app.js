@@ -3,8 +3,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 // Import routes
-const sewersRoute = require('./routes/sewers.route.js');
-const usersRoute = require('./routes/users.route.js');
+const generalRoute = require('./routes/general.route.js');
 
 const app = express();
 app.use(express.json());
@@ -16,9 +15,7 @@ app.use(express.urlencoded({
 app.set('port', process.env.PORT || 2048);
 
 // Routes
-app.use('/sewers', sewersRoute);
-app.use('/users', usersRoute);
-
+app.use('/api', generalRoute);
 
 // Databases connection
 mongoose.connect(
