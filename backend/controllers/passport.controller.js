@@ -12,7 +12,6 @@ module.exports.checkLogin = async (req, res) => {
         if (!userFound) return res.status(401).send("User not found!");
 
         const isPasswordMatched = await bcrypt.compare(req.body.password, userFound.password);
-        console.log(isPasswordMatched);
         if (!isPasswordMatched) return res.status(401).send("Incorrect password!");
 
         const accessToken = jwt.sign(userFound.toObject(), process.env.ACCESS_TOKEN_SECRET, {

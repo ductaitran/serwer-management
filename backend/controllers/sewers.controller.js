@@ -32,7 +32,13 @@ module.exports.addSewer = async (req, res) => {
     });
     try {
         const savedSewer = await sewer.save();
-        res.json(savedSewer);
+        if (savedSewer) {
+            const notUpdatedRole = await roleModel.findOneAndUpdate(
+                { name: req.body.role },
+                { $push: {haveSewers: savedSewer._id}}
+            );
+        }
+        res.sendStatus(200);
     } catch (err) {
         res.json({
             message: err
