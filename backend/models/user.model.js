@@ -20,7 +20,7 @@ const userSchema = mongoose.Schema({
         max: 1024
     },
     role: String,
-    date: {
+    created_date: {
         type: Date,
         default: Date.now
     }
