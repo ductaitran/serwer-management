@@ -6,7 +6,11 @@ const sewerSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    description: String
+    description: String,
+    location: {
+        city: String,
+        district: String
+    },
 });
 
 module.exports = mongoose.model("Sewers", sewerSchema);
