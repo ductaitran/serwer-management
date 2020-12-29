@@ -2,7 +2,11 @@ const mongoose = require('mongoose');
 
 const scheduleSchema = mongoose.Schema({
     date: {
-        type: Date,
+        type: String,
+        required: true
+    },
+    time: {
+        type: String,
         required: true
     },
     action: {
