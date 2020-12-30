@@ -7,13 +7,12 @@ import './App.css';
 import Header from './components/header/header.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 import { authenticationService } from './services/authentication.service';
+import { userService } from './services/user.service';
 
 // Fake Route, will be replaced with real component later
-const HomePage = () => (
-  <div>
-    <h1>Home Page</h1>
-  </div>
-)
+
+
+
 
 const Contact = () => (
   <div>
@@ -42,10 +41,20 @@ const Error = () => (
 export default function App() {
   const [currentUser, setCurrenUser] = useState(null);
 
+  function showAllUsers() {
+    const email = JSON.parse(currentUser).email    
+    console.log(userService.getOne(email));
+  }
+
+  const HomePage = () => (
+    <div>
+      <h1>Home Page</h1>
+      <button onClick={showAllUsers}>users</button>
+    </div>
+  )
+
   useEffect(() => {
-    authenticationService.currentUser.subscribe(x => setCurrenUser(x));
-    console.log(currentUser);
-    console.log('form local storage: ' + localStorage.getItem('currentUser'));
+    authenticationService.currentUser.subscribe(x => setCurrenUser(x));        
   });
 
   return (

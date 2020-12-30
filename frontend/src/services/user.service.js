@@ -1,17 +1,28 @@
-import { func } from 'prop-types';
-import { get } from '../../../backend/routes/users.route';
 import { authHeader } from '../helpers/auth-header';
 import { handleResponse } from '../helpers/handle-response';
 
 export const userService = {
-    getAll
+    getAll,
+    getOne
+}
+
+const requestOptions = {
+    method: 'GET',
+    headers: {
+        Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': authHeader()
+    }
 }
 
 function getAll() {
-    const requestOptions = {
-        method: 'GET',
-        headers: authHeader()
-    }
+
+    console.log(authHeader())
 
     return fetch(`http://localhost:3000/api/users`, requestOptions).then(handleResponse);
+}
+
+function getOne(email) {
+    console.log(requestOptions)
+    return fetch(`http://localhost:3000/api/users/${email}`, requestOptions).then(handleResponse);
 }
