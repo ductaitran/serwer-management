@@ -4,7 +4,7 @@ const roleModel = require('../models/role.model');
 
 module.exports.getAll = async (req, res) => {
     try {
-        let sewerLists = await roleModel.findOne({name: `${req.user.role}`}, 'haveSewers');
+        let sewerLists = await roleModel.findOne({name: req.user.role}, 'haveSewers');
         sewerLists = sewerLists.haveSewers;
         const sewers = await sewerModel.find( {_id: {$in: sewerLists} });
         res.json(sewers);
@@ -28,11 +28,21 @@ module.exports.addSewer = async (req, res) => {
     const sewer = new sewerModel({
         _id: req.body.id,
         name: req.body.name,
-        description: req.body.description
+        description: req.body.description,
+        location: {
+            city: req.body.city,
+            district: req.body.district
+        }
     });
     try {
         const savedSewer = await sewer.save();
-        res.json(savedSewer);
+        if (savedSewer) {
+            const notUpdatedRole = await roleModel.findOneAndUpdate(
+                { name: req.body.role },
+                { $push: {haveSewers: savedSewer._id}}
+            );
+        }
+        res.sendStatus(200);
     } catch (err) {
         res.json({
             message: err

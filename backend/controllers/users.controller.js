@@ -1,9 +1,11 @@
+const bcrypt = require('bcrypt');
+
 // Import models
 const userModel = require('../models/user.model');
 
 module.exports.getAll = async (req, res) => {
     try {
-        const users = await userModel.find();
+        const users = await userModel.find({}, '_id name email role created_date');
         res.json(users);
     } catch (err) {
         res.json({
@@ -14,7 +16,7 @@ module.exports.getAll = async (req, res) => {
 
 module.exports.getOne = async (req, res) => {
     try {
-        const user = await userModel.findOne(req.params.userEmail);
+        const user = await userModel.findOne({email: req.params.userEmail});
         res.json(user);
     } catch (err) {
         res.json({message: err});
@@ -22,14 +24,16 @@ module.exports.getOne = async (req, res) => {
 };
 
 module.exports.addUser = async (req, res) => {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const user = new userModel({
         name: req.body.name,
         email: req.body.email,
-        password: req.body.password
+        password: hashedPassword,
+        role: req.body.role
     });
     try {
         const savedUser = await user.save();
-        res.json(savedUser);
+        res.sendStatus(200);
     } catch (err) {
         res.json({
             message: err
