@@ -9,7 +9,8 @@ export default function PrivateRoute({ children, ...rest }) {
         localStorage.getItem('currentUser') ? (
           children
         ) : (
-            <Redirect to='/signin' />
+            // <Redirect to='/signin' />
+            <Redirect to={{ pathname: '/signin', state: { from: location } }} />      
           )
       }
     />

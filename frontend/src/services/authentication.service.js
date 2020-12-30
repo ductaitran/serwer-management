@@ -26,9 +26,6 @@ function signin(email, password) {
 
             return user;
         })
-    // console.log('from authen service: ' + email + ' ' + password);
-    // localStorage.setItem('currentUser', JSON.stringify({'email': email, 'password': password}));    
-    // currentUserSubject.next({'email': email, 'password': password});
 }
 
 function signout() {

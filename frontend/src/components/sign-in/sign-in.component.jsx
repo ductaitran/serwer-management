@@ -5,29 +5,45 @@ import { CustomButton } from '../custom-button/custom-button.component';
 import { authenticationService } from '../../services/authentication.service';
 
 import './sign-in.styles.scss';
+import { useHistory, withRouter } from 'react-router';
 
-export default function SignIn() {
+// npm modules
+const tata = require('tata-js');
+
+function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const history = useHistory();
 
     function handleSubmit(e) {
         e.preventDefault();
-        console.log(email + ' ' + password);
         signIn();
         setEmail('');
         setPassword('');
     }
 
-    function handleEmailChange(e) {        
-        setEmail(e.target.value);        
+    function handleEmailChange(e) {
+        setEmail(e.target.value);
     }
 
-    function handlePasswordChange(e) {        
-        setPassword(e.target.value);        
+    function handlePasswordChange(e) {
+        setPassword(e.target.value);
     }
 
     function signIn() {
-        authenticationService.signin(email, password);
+        authenticationService.signin(email, password)
+            .then(result => { 
+                tata.success('Welcome back', JSON.parse(result).name, {
+                    animate: 'slide',                    
+                    position: 'mr'
+                });                
+                history.push('/') 
+            })
+            .catch(e => {
+                tata.error('Oops!', 'Wrong email or password', {
+                    animate: 'slide',                    
+                })
+            })
     }
 
     return (
@@ -58,3 +74,5 @@ export default function SignIn() {
         </div>
     )
 }
+
+export default withRouter(SignIn);
