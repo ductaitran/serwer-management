@@ -1,5 +1,8 @@
 const jwt = require('jsonwebtoken');
 
+// Import models
+const userModel = require('../models/user.model');
+
 module.exports.authenToken = (req, res, next) => {
     const authenHeader = req.headers['authorization'];
     const token = authenHeader && authenHeader.split(' ')[1]
@@ -10,4 +13,18 @@ module.exports.authenToken = (req, res, next) => {
         req.user = user;
         next();
     })
-}
+};
+
+module.exports.isEmailAvailable = async (req, res, next) => {
+    try {
+        const userFound = await userModel.findOne({
+            email: req.body.email
+        });
+        if (userFound) return res.status(401).json("User is not available");
+        next();
+    } catch (err) {
+        res.json({
+            message: err
+        });
+    }
+};

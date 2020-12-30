@@ -4,18 +4,21 @@ const router = express.Router();
 // Import routes
 const sewersRoute = require('./sewers.route');
 const usersRoute = require('./users.route');
+const schedulesRoute = require('./schedules.route');
 
 // Import middlewares
-const authenUser = require('../middlewares/jsonWebToken.middleware');
+const passportMiddleware = require('../middlewares/passport.middleware');
 
 // Import controllers
-const passport = require('../controllers/passport.controller');
+const passportController = require('../controllers/passport.controller');
 const userController = require('../controllers/users.controller');
 
-router.post('/login', passport.checkLogin);
-router.post('/register', passport.isEmailAvailable, userController.addUser);
-router.use('/sewers', authenUser.authenToken, sewersRoute);
-router.use('/users', authenUser.authenToken, usersRoute);
+router.post('/login', passportController.checkLogin);
+router.post('/register', passportMiddleware.isEmailAvailable, userController.addUser);
+router.use('/sewers', passportMiddleware.authenToken, sewersRoute);
+router.use('/users', passportMiddleware.authenToken, usersRoute);
+router.use('/schedules', passportMiddleware.authenToken, schedulesRoute);
+
 
 
 module.exports = router;
