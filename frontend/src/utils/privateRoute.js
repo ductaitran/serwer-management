@@ -1,13 +1,12 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 
-function PrivateRoute({ children, ...rest }) {
-  const ACCESS_TOKEN_NAME = ''
+export default function PrivateRoute({ children, ...rest }) {
   return (
     <Route
       {...rest}
       render={({ location }) =>
-        localStorage.getItem(ACCESS_TOKEN_NAME) ? (
+        localStorage.getItem('currentUser') ? (
           children
         ) : (
             <Redirect to='/signin' />
@@ -16,5 +15,3 @@ function PrivateRoute({ children, ...rest }) {
     />
   );
 }
-
-export default PrivateRoute;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import PrivateRoute from './utils/privateRoute';
 
@@ -6,6 +6,7 @@ import './App.css';
 
 import Header from './components/header/header.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
+import { authenticationService } from './services/authentication.service';
 
 // Fake Route, will be replaced with real component later
 const HomePage = () => (
@@ -32,33 +33,36 @@ const Monitor = () => (
   </div>
 )
 
-class App extends React.Component {
-  constructor() {
-    super();
+const Error = () => (
+  <div>
+    <h1>404</h1>
+  </div>
+)
 
-    this.state = {
-      currentUser: null
-    }
-  }
+export default function App() {
+  const [currentUser, setCurrenUser] = useState(null);
 
-  render() {
-    return (
-      <div>
-        <Header currentUser={this.state.currentUser} />
-        <Switch>
-          <Route exact path='/' component={HomePage} />         
-          <Route exact path='/signin' component={SignInAndSignUpPage} />
-          <PrivateRoute exact path='/monitor'>
-            <Monitor />
-          </PrivateRoute>
-          <PrivateRoute exact path='/schedule'>
-            <Schedule />
-          </PrivateRoute>                    
-          <Route path='/contact' component={Contact} />
-        </Switch>
-      </div>
-    )
-  }
+  useEffect(() => {
+    authenticationService.currentUser.subscribe(x => setCurrenUser(x));
+    console.log(currentUser);
+    console.log('form local storage: ' + localStorage.getItem('currentUser'));
+  });
+
+  return (
+    <div>
+      <Header currentUser={currentUser} />
+      <Switch>
+        <Route exact path='/' component={HomePage} />
+        <Route exact path='/signin' component={SignInAndSignUpPage} />
+        <PrivateRoute exact path='/monitor'>
+          <Monitor />
+        </PrivateRoute>
+        <PrivateRoute exact path='/schedule'>
+          <Schedule />
+        </PrivateRoute>
+        <Route exact path='/contact' component={Contact} />
+        <Route component={Error} />
+      </Switch>
+    </div>
+  );
 }
-
-export default App;
