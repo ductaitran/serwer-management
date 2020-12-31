@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+var cors = require('cors')
 require('dotenv').config();
 
 // Import routes
@@ -10,6 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({
     extended: true
 }));
+app.use(cors());
 
 // Setting
 app.set('port', process.env.PORT || 2048);
