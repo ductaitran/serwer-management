@@ -28,6 +28,10 @@ const userSchema = mongoose.Schema({
     created_date: {
         type: Date,
         default: Date.now
+    },
+    location: {
+        city: String,
+        district: String
     }
 });
 

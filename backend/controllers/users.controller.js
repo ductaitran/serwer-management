@@ -4,7 +4,7 @@ const userModel = require('../models/user.model');
 
 module.exports.getAll = async (req, res) => {
     try {
-        const users = await userModel.find({}, '_id name email role created_date');
+        const users = await userModel.find();
         res.json(users);
     } catch (err) {
         res.json({

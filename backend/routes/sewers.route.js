@@ -5,7 +5,7 @@ const router = express.Router();
 const sewerController = require('../controllers/sewers.controller');
 
 // Get routes
-// router.get('/', sewerController.getAll);
+router.get('/', sewerController.getAll);
 router.get('/:sewerId', sewerController.getOne);
 router.get('/:page/:limit', sewerController.getLimit);
 

@@ -1,24 +1,40 @@
 // Import models
 const sewerModel = require('../models/sewer.model');
+const locationModel = require('../models/location.model');
 
-// module.exports.getAll = async (req, res) => {
-//     try {
-//         let sewerLists = await roleModel.findOne({
-//             name: req.user.role
-//         }, 'haveSewers');
-//         sewerLists = sewerLists.haveSewers;
-//         const sewers = await sewerModel.find({
-//             _id: {
-//                 $in: sewerLists
-//             }
-//         });
-//         res.json(sewers);
-//     } catch (err) {
-//         res.json({
-//             message: err
-//         });
-//     }
-// };
+// Import controllers
+const passportController = require('../controllers/passport.controller');
+
+module.exports.getAll = async (req, res) => {
+    try {
+        if (passportController.isAdmin) {
+            const sewers = await sewerModel.find();
+            return res.json(sewers);
+        }
+        const sewerList = await locationModel.findOne({
+            name: req.user.location.city
+        });
+        console.log(sewerList);
+        let trueSewerList;
+        sewerList.district.forEach(element => {
+            console.log(element);
+            if (element.name === req.user.location.district) {
+                trueSewerList = element.haveSewers;
+            }
+        });
+        console.log(trueSewerList)
+        const sewers = await sewerModel.find({
+            _id: {
+                $in: trueSewerList
+            }
+        });
+        res.json(sewers);
+    } catch (err) {
+        res.json({
+            message: err
+        });
+    }
+};
 
 module.exports.getOne = async (req, res) => {
     try {
@@ -39,8 +55,10 @@ module.exports.getLimit = async (req, res) => {
     try {
         const sewers = await sewerModel.find({}).limit(pageOptions.limit).skip(pageOptions.limit * pageOptions.page);
         res.json(sewers);
-    } catch(err) {
-        res.status(500).json({message: err});
+    } catch (err) {
+        res.status(500).json({
+            message: err
+        });
     }
 }
 
@@ -56,15 +74,6 @@ module.exports.addSewer = async (req, res) => {
     });
     try {
         const savedSewer = await sewer.save();
-        if (savedSewer) {
-            const notUpdatedRole = await roleModel.findOneAndUpdate({
-                name: req.body.role
-            }, {
-                $push: {
-                    haveSewers: savedSewer._id
-                }
-            });
-        }
         res.sendStatus(200);
     } catch (err) {
         res.json({
