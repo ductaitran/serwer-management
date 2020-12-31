@@ -18,7 +18,7 @@ router.post('/register', passportMiddleware.isEmailAvailable, userController.add
 router.use('/sewers', passportMiddleware.authenToken, sewersRoute);
 router.use('/users', passportMiddleware.authenToken, usersRoute);
 router.use('/schedules', passportMiddleware.authenToken, schedulesRoute);
-
+router.use('/roles', passportMiddleware.authenToken, userController.getAllRole);
 
 
 module.exports = router;
