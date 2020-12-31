@@ -29,3 +29,7 @@ module.exports.checkLogin = async (req, res) => {
         });
     }
 };
+
+module.exports.isAdmin = (req, res) => {
+    return req.user.role === "Admin" ? true : false;
+}
