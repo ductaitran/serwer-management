@@ -1,6 +1,4 @@
 const bcrypt = require('bcrypt');
-const roleModel = require('../models/role.model');
-
 // Import models
 const userModel = require('../models/user.model');
 
@@ -53,7 +51,7 @@ module.exports.deleteUser = async (req, res) => {
 
 module.exports.getAllRole = async (req, res) => {
     try {
-        const roles = await roleModel.find();
+        const roles = await userModel.schema.path('role').enumValues;
         res.status(200).json(roles);
     } catch (err) {
         res.status(500).json({message: err});

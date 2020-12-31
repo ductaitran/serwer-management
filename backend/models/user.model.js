@@ -19,7 +19,12 @@ const userSchema = mongoose.Schema({
         min: 6,
         max: 1024
     },
-    role: String,
+    role: {
+        type: String,
+        required: true,
+        enum: ['Admin', 'User', 'Guest'],
+        default: 'Guest'
+    },
     created_date: {
         type: Date,
         default: Date.now
