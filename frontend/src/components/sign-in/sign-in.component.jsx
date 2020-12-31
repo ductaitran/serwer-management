@@ -38,12 +38,13 @@ function SignIn() {
                     position: 'mr'
                 });                
                 history.push('/') 
+                window.location.reload();
             })
             .catch(e => {
                 tata.error('Oops!', 'Wrong email or password', {
                     animate: 'slide',                    
                 })
-            })
+            })        
     }
 
     return (

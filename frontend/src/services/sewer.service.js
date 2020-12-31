@@ -1,9 +1,9 @@
 import { authHeader } from '../helpers/auth-header';
 import { handleResponse } from '../helpers/handle-response';
 
-export const userService = {
+export const sewerService = {
     getAll,
-    getByEmail
+    getById
 }
 
 const requestOptions = {
@@ -16,12 +16,12 @@ const requestOptions = {
 
 function getAll() {
 
-    // console.log(authHeader())
+    console.log(authHeader())
 
-    return fetch(`http://localhost:3000/api/users`, requestOptions).then(handleResponse);
+    return fetch(`http://localhost:3000/api/sewers`, requestOptions).then(handleResponse);
 }
 
-function getByEmail(email) {
+function getById(id) {
     console.log(requestOptions)
-    return fetch(`http://localhost:3000/api/users/${email}`, requestOptions).then(handleResponse);
+    return fetch(`http://localhost:3000/api/sewers/${id}`, requestOptions).then(handleResponse);
 }
