@@ -7,7 +7,7 @@ const passportController = require('../controllers/passport.controller');
 
 module.exports.getAll = async (req, res) => {
     try {
-        if (passportController.isAdmin) {
+        if (passportController.isAdmin(req.user.role)) {
             const sewers = await sewerModel.find();
             return res.json(sewers);
         }
