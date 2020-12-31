@@ -11,21 +11,10 @@ module.exports.getAll = async (req, res) => {
             const sewers = await sewerModel.find();
             return res.json(sewers);
         }
-        const sewerList = await locationModel.findOne({
-            name: req.user.location.city
-        });
-        console.log(sewerList);
-        let trueSewerList;
-        sewerList.district.forEach(element => {
-            console.log(element);
-            if (element.name === req.user.location.district) {
-                trueSewerList = element.haveSewers;
-            }
-        });
-        console.log(trueSewerList)
+        const sewerList = await getSewerByLocation(req.user.location.city, req.user.location.district);
         const sewers = await sewerModel.find({
             _id: {
-                $in: trueSewerList
+                $in:sewerList
             }
         });
         res.json(sewers);
@@ -38,7 +27,12 @@ module.exports.getAll = async (req, res) => {
 
 module.exports.getOne = async (req, res) => {
     try {
-        const sewer = await sewerModel.findById(req.params.sewerId);
+        const sewerList = await getSewerByLocation(req.user.location.city, req.user.location.district);
+        let sewer = await sewerModel.find({_id: { $in: sewerList }});
+        sewer = sewer.filter(element => {
+            return element._id === req.params.sewerId;
+        });
+        if(sewer.length == 0) return res.status(400).json("Not found!");
         res.json(sewer);
     } catch (err) {
         res.json({
@@ -53,7 +47,8 @@ module.exports.getLimit = async (req, res) => {
         limit: parseInt(req.params.limit, 10) || 10
     }
     try {
-        const sewers = await sewerModel.find({}).limit(pageOptions.limit).skip(pageOptions.limit * pageOptions.page);
+        const sewerList = await getSewerByLocation(req.user.location.city, req.user.location.district);
+        const sewers = await sewerModel.find({_id: { $in: sewerList }}).limit(pageOptions.limit).skip(pageOptions.limit * pageOptions.page);
         res.json(sewers);
     } catch (err) {
         res.status(500).json({
@@ -66,11 +61,7 @@ module.exports.addSewer = async (req, res) => {
     const sewer = new sewerModel({
         _id: req.body.id,
         name: req.body.name,
-        description: req.body.description,
-        location: {
-            city: req.body.city,
-            district: req.body.district
-        }
+        description: req.body.description
     });
     try {
         const savedSewer = await sewer.save();
@@ -88,15 +79,28 @@ module.exports.deleteSewer = async (req, res) => {
             _id: req.params.sewerId
         });
         if (!removedSewer) return res.status(500).json("Cannot delete this sewer!");
-        const removedSewersInRole = await roleModel.updateMany({}, {
+        const removedSewersInLocation = await location.updateMany({}, {
             $pullAll: {
                 haveSewers: [req.params.sewerId]
             }
         });
-        res.json(removedSewersInRole);
+        res.json(removedSewersInLocation);
     } catch (err) {
         res.status(500).json({
             message: err
         });
     }
 };
+
+getSewerByLocation = async (city, district) => {
+    const sewerList = await locationModel.findOne({
+        name: city
+    });
+    let trueSewerList;
+    sewerList.district.forEach(element => {
+        if (element.name === district) {
+            trueSewerList = element.haveSewers;
+        }
+    });
+    return trueSewerList;
+}
