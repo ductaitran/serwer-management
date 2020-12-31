@@ -1,25 +1,24 @@
 // Import models
 const sewerModel = require('../models/sewer.model');
-const roleModel = require('../models/role.model');
 
-module.exports.getAll = async (req, res) => {
-    try {
-        let sewerLists = await roleModel.findOne({
-            name: req.user.role
-        }, 'haveSewers');
-        sewerLists = sewerLists.haveSewers;
-        const sewers = await sewerModel.find({
-            _id: {
-                $in: sewerLists
-            }
-        });
-        res.json(sewers);
-    } catch (err) {
-        res.json({
-            message: err
-        });
-    }
-};
+// module.exports.getAll = async (req, res) => {
+//     try {
+//         let sewerLists = await roleModel.findOne({
+//             name: req.user.role
+//         }, 'haveSewers');
+//         sewerLists = sewerLists.haveSewers;
+//         const sewers = await sewerModel.find({
+//             _id: {
+//                 $in: sewerLists
+//             }
+//         });
+//         res.json(sewers);
+//     } catch (err) {
+//         res.json({
+//             message: err
+//         });
+//     }
+// };
 
 module.exports.getOne = async (req, res) => {
     try {

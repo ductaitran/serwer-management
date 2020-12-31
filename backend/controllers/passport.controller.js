@@ -20,6 +20,7 @@ module.exports.checkLogin = async (req, res) => {
         res.json({
             name: userFound.name,
             email: userFound.email,
+            role: userFound.role,
             accessToken: accessToken
         });
     } catch (err) {
