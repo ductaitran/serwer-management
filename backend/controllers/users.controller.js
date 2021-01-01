@@ -32,7 +32,7 @@ module.exports.addUser = async (req, res) => {
     });
     try {
         const savedUser = await user.save();
-        res.sendStatus(200);
+        res.status(201).json("Add user successful!");
     } catch (err) {
         res.json({
             message: err

@@ -27,6 +27,10 @@ module.exports.getAll = async (req, res) => {
 
 module.exports.getOne = async (req, res) => {
     try {
+        if (passportController.isAdmin(req.user.role)) {
+            const sewers = await sewerModel.findById(req.params.sewerId);
+            return res.json(sewers);
+        }
         const sewerList = await getSewerByLocation(req.user.location.city, req.user.location.district);
         let sewer = await sewerModel.find({_id: { $in: sewerList }});
         sewer = sewer.filter(element => {
@@ -47,6 +51,10 @@ module.exports.getLimit = async (req, res) => {
         limit: parseInt(req.params.limit, 10) || 10
     }
     try {
+        if (passportController.isAdmin(req.user.role)) {
+            const sewers = await sewerModel.find().limit(pageOptions.limit).skip(pageOptions.limit * pageOptions.page);
+            return res.json(sewers);
+        }
         const sewerList = await getSewerByLocation(req.user.location.city, req.user.location.district);
         const sewers = await sewerModel.find({_id: { $in: sewerList }}).limit(pageOptions.limit).skip(pageOptions.limit * pageOptions.page);
         res.json(sewers);
