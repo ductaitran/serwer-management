@@ -5,8 +5,7 @@ export function authHeader() {
     // console.log(authenticationService.currentUserValue);
     const currentUser = JSON.parse(authenticationService.currentUserValue);    
     if (currentUser && currentUser.accessToken) {
-        // console.log(currentUser.accessToken);
-        // return { Authorization: `Bearer ${currentUser.accessToken}` };
+        // console.log(currentUser.accessToken);        
         return `Bearer ${currentUser.accessToken}`;
     } else {
         return '';

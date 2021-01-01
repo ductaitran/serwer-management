@@ -15,16 +15,9 @@ export default function PrivateRoute({ children, roles, ...rest }) {
 
         if (roles && roles.indexOf(currentUser.role) === -1) {
           return <Redirect to='/' />
-        }
-        // console.log(currentUser)
+        }        
         return children
-      }
-        // localStorage.getItem('currentUser') ? (
-        //   children
-        // ) : (
-        //     // <Redirect to='/signin' />
-        //     <Redirect to={{ pathname: '/signin', state: { from: location } }} />      
-        //   )
+      }        
       }
     />
   );
