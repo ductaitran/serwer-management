@@ -27,10 +27,12 @@ module.exports.getAll = async (req, res) => {
 
 module.exports.getOne = async (req, res) => {
     try {
+        // Check user is "Admin" or not, if true, return all sewer.
         if (passportController.isAdmin(req.user.role)) {
             const sewers = await sewerModel.findById(req.params.sewerId);
             return res.json(sewers);
         }
+        // If user is not "Admin", return sewer in user's location.
         const sewerList = await getSewerByLocation(req.user.location.city, req.user.location.district);
         let sewer = await sewerModel.find({_id: { $in: sewerList }});
         sewer = sewer.filter(element => {
@@ -46,11 +48,13 @@ module.exports.getOne = async (req, res) => {
 };
 
 module.exports.getLimit = async (req, res) => {
+    // Set paginating option
     const pageOptions = {
         page: parseInt(req.params.page, 10) || 0,
         limit: parseInt(req.params.limit, 10) || 10
     }
     try {
+        // Check user is "Admin" or not, if true, return all sewer with limit option.
         if (passportController.isAdmin(req.user.role)) {
             const sewers = await sewerModel.find().limit(pageOptions.limit).skip(pageOptions.limit * pageOptions.page);
             return res.json(sewers);
@@ -83,10 +87,12 @@ module.exports.addSewer = async (req, res) => {
 
 module.exports.deleteSewer = async (req, res) => {
     try {
+        // Remove sewer in sewers collection
         const removedSewer = await sewerModel.deleteOne({
             _id: req.params.sewerId
         });
         if (!removedSewer) return res.status(500).json("Cannot delete this sewer!");
+        // Remove sewer from all location collections have it
         const removedSewersInLocation = await location.updateMany({}, {
             $pullAll: {
                 haveSewers: [req.params.sewerId]
@@ -101,9 +107,11 @@ module.exports.deleteSewer = async (req, res) => {
 };
 
 getSewerByLocation = async (city, district) => {
+    // Return list of sewer by city name
     const sewerList = await locationModel.findOne({
         name: city
     });
+    // Filter list of sewer to match district name
     let trueSewerList;
     sewerList.district.forEach(element => {
         if (element.name === district) {
