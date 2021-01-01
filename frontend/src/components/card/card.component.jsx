@@ -24,27 +24,27 @@ export default function MediaCard(props) {
     <Card className={classes.root}>
       <CardActionArea>
         <CardMedia
-          className={classes.media}
-          image="/static/images/cards/contemplative-reptile.jpg"
+        //   className={classes.media}
+          component="img"
+          height="250"
+          image={`https://robohash.org/${props.sewer._id+4}?set=set1`}                 
           title="Contemplative Reptile"
         />
         <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
-            Lizard
+          <Typography gutterBottom variant="h5" component="h2">            
             {props.sewer.name}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
-            Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
-            across all continents except Antarctica
+            {props.sewer.description}
           </Typography>
         </CardContent>
       </CardActionArea>
       <CardActions>
         <Button size="small" color="primary">
-          Share
+          Control
         </Button>
         <Button size="small" color="primary">
-          Learn More
+          Schedule
         </Button>
       </CardActions>
     </Card>
