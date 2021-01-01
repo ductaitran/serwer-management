@@ -31,7 +31,7 @@ module.exports.addSchedule = async (req, res) => {
     });
     try {
         const savedSchedule = await schedule.save();
-        res.sendStatus(200);
+        res.status(201).json("Set schedule successful!");
     } catch (err) {
         res.status(500).json({
             message: err
@@ -42,7 +42,7 @@ module.exports.addSchedule = async (req, res) => {
 module.exports.deleteSchedule = async (req, res) => {
     try {
         const removedSchedule = await scheduleModel.remove({_id: req.params.scheduleId});
-        res.sendStatus(200);
+        res.status(200).json("Delete schedule successful!");
     } catch (err) {
         res.status(500).json({message: err});
     }
