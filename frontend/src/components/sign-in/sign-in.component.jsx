@@ -33,10 +33,10 @@ function SignIn() {
     function signIn() {
         authenticationService.signin(email, password)
             .then(result => { 
-                tata.success('Welcome back', JSON.parse(result).name, {
-                    animate: 'slide',                    
-                    position: 'mr'
-                });                
+                // tata.success('Welcome back', JSON.parse(result).name, {
+                //     animate: 'slide',                    
+                //     position: 'mr'
+                // });                
                 history.push('/') 
                 window.location.reload();
             })

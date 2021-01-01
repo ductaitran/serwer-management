@@ -9,8 +9,7 @@ export default function MonitorPage() {
 
     useEffect(() => {
         sewerService.getAll()
-            .then(result => {
-                console.log(JSON.parse(result));
+            .then(result => {                
                 setSewer(JSON.parse(result))
             })
     }, []);

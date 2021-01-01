@@ -6,7 +6,7 @@ import './App.css';
 
 import Header from './components/header/header.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
-import MonitorPage from './pages/monitor/monitor.component'; 
+import MonitorPage from './pages/monitor/monitor.component';
 
 import { authenticationService } from './services/authentication.service';
 import { userService } from './services/user.service';
@@ -27,12 +27,6 @@ const Contact = () => (
 const Schedule = () => (
   <div>
     <h1>Schedule Page</h1>
-  </div>
-)
-
-const Monitor = () => (
-  <div>
-    <h1>Monitor Page</h1>
   </div>
 )
 
@@ -58,14 +52,11 @@ export default function App() {
       var name = '';
       userService.getByEmail(email)
         .then(result => {
-          {
-            console.log(JSON.parse(result));
-            name = JSON.parse(result).name;
-            console.log(name);
-            if (name == "Duc Tai") {
-              document.getElementById("username").innerHTML = "<button>Duc Tai</button>"
-            }
-          }
+          console.log(JSON.parse(result));
+          name = JSON.parse(result).name;
+          console.log(name);
+          if (name === "Duc Tai")
+            document.getElementById("username").innerHTML = "<button>Duc Tai</button>"
         });
       // console.log(userService.getAll())
     } else {

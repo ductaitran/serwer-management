@@ -14,10 +14,7 @@ const requestOptions = {
     }
 }
 
-function getAll() {
-
-    console.log(authHeader())
-
+function getAll() {    
     return fetch(`http://localhost:3000/api/sewers`, requestOptions).then(handleResponse);
 }
 

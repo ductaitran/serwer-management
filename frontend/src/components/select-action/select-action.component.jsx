@@ -15,12 +15,13 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function ActionSelect() {
+export default function ActionSelect(props) {
 	const classes = useStyles();
 	const [action, setAction] = React.useState('');
 
 	useEffect(() => {
-		console.log(action)
+		// console.log(action);
+		props.value(action);
 	}, [action])
 
 	const handleChange = (event) => {		
