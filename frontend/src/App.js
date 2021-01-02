@@ -7,6 +7,7 @@ import './App.css';
 import Header from './components/header/header.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 import MonitorPage from './pages/monitor/monitor.component';
+import SchedulePage from './pages/schedule/schedule.component';
 
 import { authenticationService } from './services/authentication.service';
 import { userService } from './services/user.service';
@@ -21,12 +22,6 @@ import { Role } from './helpers/role';
 const Contact = () => (
   <div>
     <h1>Contact Page</h1>
-  </div>
-)
-
-const Schedule = () => (
-  <div>
-    <h1>Schedule Page</h1>
   </div>
 )
 
@@ -95,7 +90,7 @@ export default function App() {
           <MonitorPage />
         </PrivateRoute>
         <PrivateRoute exact path='/schedule'>
-          <Schedule />
+          <SchedulePage />
         </PrivateRoute>
         <PrivateRoute exact path='/admin' roles={[Role.Admin]}>
           <Admin />
