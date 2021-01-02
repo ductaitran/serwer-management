@@ -92,15 +92,15 @@ module.exports.addSewer = async (req, res) => {
         if (savedSewer) {
             const addSewerIntoLocation = await locationModel.updateOne({
                 name: req.body.city,
-                'district.name': req.body.district
+                "district.name": req.body.district
             }, {
                 $push: {
-                    haveSewers: req.body.id
+                    "district.$.haveSewers": req.body.id
                 }
             });
             res.status(200).json("Add sewer successful!");
         };
-        res.sendStatus(500);
+        res.sendStatus(500).json("Cannot add this sewer!");
     } catch (err) {
         res.json({
             message: err
@@ -116,12 +116,12 @@ module.exports.deleteSewer = async (req, res) => {
         });
         if (!removedSewer) return res.status(500).json("Cannot delete this sewer!");
         // Remove sewer from all location collections have it
-        const removedSewersInLocation = await location.updateMany({}, {
-            $pullAll: {
-                haveSewers: [req.params.sewerId]
+        const removedSewersInLocation = await locationModel.updateMany({"district.haveSewers": req.params.sewerId}, {
+            $pull: {
+                "district.$.haveSewers": req.params.sewerId
             }
         });
-        res.json(removedSewersInLocation);
+        res.status(200).json("Delete sewer successful!");
     } catch (err) {
         res.status(500).json({
             message: err
