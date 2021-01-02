@@ -7,41 +7,33 @@ import { sewerService } from '../../services/sewer.service';
 
 export default function SchedulePage() {
     const [schedules, setSchedules] = useState([]);
-    const [sewerInfo, setSewerInfo] = useState([]);
+    const [extraSchedules, setExtraSchedules] = useState([]);
 
     useEffect(() => {
-        // fetch schedules
-        getScheduleData().then(result => setSchedules(result))
-        console.log(schedules);
+        scheduleService.getAll()
+            .then(response => {
+                setSchedules(JSON.parse(response))                
+            });
+                
+        // add field [city] and [district] to schedule data to pass to ScheduleTable
+        schedules.forEach((schedule, index) => {            
+            sewerService.getById(schedule.sewer)
+                .then(response => {                    
+                    schedule.city = JSON.parse(response).location.city;
+                    schedule.district = JSON.parse(response).location.district;                    
+                    setExtraSchedules(prev => [...prev, schedule]);
+                })                                    
+        })                        
 
-        const sewerId = schedules.map(schedule => schedule.sewer)
-            .filter((value, index, self) => self.indexOf(value) === index)
-        console.log(sewerId);
-
-        // fetch sewer info on schedules
-        sewerId.forEach(id => {
-            getSewerInfoById(id)
-                .then(result => setSewerInfo(result))
-        })
-        console.log(sewerInfo);
-    }, [schedules.length, sewerInfo.length])
-
-    function getScheduleData() {
-        return scheduleService.getAll().then(result => {
-            return JSON.parse(result)
-        });
-    }
-
-    function getSewerInfoById(id) {
-        return sewerService.getById(id).then(result => {
-                return JSON.parse(result)
-            })
-    }
+        return () => {
+            console.log('unmount');
+        }
+    }, [schedules.length])
 
     return (
         <div>
             <h1>Schedule Page</h1>
-            <ScheduleTable rows={schedules} />
+            <ScheduleTable rows={extraSchedules} />
         </div>
     )
 }

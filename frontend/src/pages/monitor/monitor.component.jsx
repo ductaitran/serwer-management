@@ -7,7 +7,7 @@ import { sewerService } from '../../services/sewer.service';
 
 
 export default function MonitorPage() {
-    const [sewers, setSewers] = useState([]);
+    const [sewers, setSewers] = useState(() => {return []});
     const [searchField, setSearchField] = useState('');
     const [filteredSewers, setFilteredSewers] = useState([]);
 
@@ -16,16 +16,18 @@ export default function MonitorPage() {
             .then(result => {
                 setSewers(JSON.parse(result))
             });
-        // console.log(searchField);
-        // console.log(sewers);
+                 
         setFilteredSewers(sewers.filter(sewer => 
-            sewer.city.toLowerCase().includes(searchField.toLowerCase()))
-            )
-        // console.log('filtered: ' + filteredSewers);
-    }, [searchField, sewers]);
+            sewer.location.city.toLowerCase().includes(searchField.toLowerCase()))
+        )        
+
+        return () => {
+            console.log('unmount')
+        }
+    }, [searchField, sewers.length]);
 
     function handleChange(e) {
-        setSearchField(e.target.value)        
+        setSearchField(e.target.value)             
     }
 
     return (
