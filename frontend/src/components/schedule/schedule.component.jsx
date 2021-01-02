@@ -14,15 +14,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Schedule() {
+export default function Schedule(props) {
   const classes = useStyles();
   const [dateTime, setDateTime] = useState('');
 
   useEffect(() => {
-    console.log(dateTime);
+    // console.log(dateTime);
+    props.value(dateTime);
   }, [dateTime]);
 
-  function handleChange(e) {
+  function handleChange(e) {  
     // console.log(e.target.value)
     setDateTime(e.target.value)    
   }
