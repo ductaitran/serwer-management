@@ -16,43 +16,35 @@ const useStyles = makeStyles({
 
 export default function ScheduleTable(props) {
 	const classes = useStyles();	
-	const [rows, setRows] = useState([]);
 
-	// function createData(date, time, action, sewer) {
-	// 	return { date, time, action, sewer };
-	// }
-	
-	useEffect(() => {
-		// console.log(props.rows);
-		setRows(props.rows);
-	})
-
-	return (		
-			<TableContainer component={Paper}>
-				<Table className={classes.table} aria-label="simple table">
-					<TableHead>
-						<TableRow>
-							<TableCell>Date</TableCell>
-							<TableCell align="right">Time</TableCell>
-							<TableCell align="right">Action</TableCell>
-							<TableCell align="right">Sewer</TableCell>
-							{/* <TableCell align="right">Location</TableCell> */}
+	return (
+		<TableContainer component={Paper}>
+			<Table className={classes.table} aria-label="simple table">
+				<TableHead>
+					<TableRow>
+						<TableCell>Date</TableCell>
+						<TableCell align="right">Time</TableCell>
+						<TableCell align="right">Action</TableCell>
+						<TableCell align="right">Sewer</TableCell>
+						<TableCell align="right">City</TableCell>
+						<TableCell align="right">District</TableCell>
+					</TableRow>
+				</TableHead>
+				<TableBody>
+					{props.rows.map((row) => (
+						<TableRow key={row._id}>
+							<TableCell component="th" scope="row">
+								{row.date}
+							</TableCell>
+							<TableCell align="right">{row.time}</TableCell>
+							<TableCell align="right">{row.action === '0' ? 'Close' : 'Open'}</TableCell>
+							<TableCell align="right">{row.sewer}</TableCell>
+							<TableCell align="right">{row.city}</TableCell>
+							<TableCell align="right">{row.district}</TableCell>
 						</TableRow>
-					</TableHead>
-					<TableBody>
-						{rows.map((row) => (
-							<TableRow key={row._id}>
-								<TableCell component="th" scope="row">
-									{row.date}
-								</TableCell>
-								<TableCell align="right">{row.time}</TableCell>
-								<TableCell align="right">{row.action}</TableCell>
-								<TableCell align="right">{row.sewer}</TableCell>
-								{/* <TableCell align="right">{row.location}</TableCell> */}
-							</TableRow>
-						))}
-					</TableBody>
-				</Table>
-			</TableContainer>
+					))}
+				</TableBody>
+			</Table>
+		</TableContainer>
 	);
 }

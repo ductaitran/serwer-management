@@ -18,7 +18,6 @@ function getAll() {
     return fetch(`http://localhost:3000/api/sewers`, requestOptions).then(handleResponse);
 }
 
-function getById(id) {
-    console.log(requestOptions)
+function getById(id) {    
     return fetch(`http://localhost:3000/api/sewers/${id}`, requestOptions).then(handleResponse);
 }
