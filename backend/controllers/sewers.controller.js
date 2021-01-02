@@ -11,12 +11,8 @@ module.exports.getAll = async (req, res) => {
             const sewers = await sewerModel.find();
             return res.json(sewers);
         }
-        const sewerList = await getSewerByLocation(req.user.location.city, req.user.location.district);
-        const sewers = await sewerModel.find({
-            _id: {
-                $in:sewerList
-            }
-        });
+        const sewerList = await getSewerByLocation(req.user.location.city);
+        const sewers = await sewerModel.find({_id: { $in: sewerList }});
         res.json(sewers);
     } catch (err) {
         res.json({
@@ -33,7 +29,7 @@ module.exports.getOne = async (req, res) => {
             return res.json(sewers);
         }
         // If user is not "Admin", return sewer in user's location.
-        const sewerList = await getSewerByLocation(req.user.location.city, req.user.location.district);
+        const sewerList = await getSewerByLocation(req.user.location.city);
         let sewer = await sewerModel.find({_id: { $in: sewerList }});
         sewer = sewer.filter(element => {
             return element._id === req.params.sewerId;
@@ -59,7 +55,7 @@ module.exports.getLimit = async (req, res) => {
             const sewers = await sewerModel.find().limit(pageOptions.limit).skip(pageOptions.limit * pageOptions.page);
             return res.json(sewers);
         }
-        const sewerList = await getSewerByLocation(req.user.location.city, req.user.location.district);
+        const sewerList = await getSewerByLocation(req.user.location.city);
         const sewers = await sewerModel.find({_id: { $in: sewerList }}).limit(pageOptions.limit).skip(pageOptions.limit * pageOptions.page);
         res.json(sewers);
     } catch (err) {
@@ -73,8 +69,7 @@ module.exports.addSewer = async (req, res) => {
     const sewer = new sewerModel({
         _id: req.body.id,
         name: req.body.name,
-        description: req.body.description,
-        city: req.body.city
+        description: req.body.description
     });
     try {
         const savedSewer = await sewer.save();
@@ -107,17 +102,19 @@ module.exports.deleteSewer = async (req, res) => {
     }
 };
 
-getSewerByLocation = async (city, district) => {
+getSewerByLocation = async (city) => {
     // Return list of sewer by city name
-    const sewerList = await locationModel.findOne({
+    const cityList = await locationModel.findOne({
         name: city
+    }, 'district.haveSewers');
+    let sewerList = [], realSewerList = [];
+    cityList['district'].forEach(element => {
+        sewerList = sewerList.concat(element.haveSewers);
     });
-    // Filter list of sewer to match district name
-    let trueSewerList;
-    sewerList.district.forEach(element => {
-        if (element.name === district) {
-            trueSewerList = element.haveSewers;
-        }
+    sewerList.forEach(element => {
+        if (!realSewerList.includes(element)) {
+            realSewerList.push(element);
+        };
     });
-    return trueSewerList;
+    return realSewerList;
 }
