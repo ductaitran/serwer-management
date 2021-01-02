@@ -1,10 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const {
-    startMQTTConnection,
-    sendMessageOnSchedule
-} = require('./utils/mqttFunction');
+const mqtt = require('./utils/mqttFunction');
 require('dotenv').config();
 global.WebSocket = require('ws');
 
@@ -31,15 +28,18 @@ mongoose.connect(
         useUnifiedTopology: true,
         useNewUrlParser: true
     },
-    () => console.log("Connected to MongoDB!")
+    () => {
+        console.log("Connected to MongoDB!");
+        run();
+    }
 );
 
 run = async () => {
-    await startMQTTConnection();
-    var scheduleInterval = setInterval(sendMessageOnSchedule, 500);
+    await mqtt.startMQTTConnection();
+    mqtt.setHaveNewSchedule(false);
+    var scheduleInterval = setInterval(mqtt.sendMessageOnSchedule, 500);
 };
 
-run();
 // listen for requests :)
 const listener = app.listen(app.get('port'), () => {
     console.log("Your app is listening on port " + listener.address().port);

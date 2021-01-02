@@ -3,6 +3,7 @@ const sewerModel = require('../models/sewer.model');
 const Paho = require('./paho-mqtt');
 
 var schedules;
+var haveNewSchedule;
 
 module.exports.startMQTTConnection = async () => {
 
@@ -44,11 +45,12 @@ async function onConnect() {
     var topic = "controller";
     // Fetch sewer list from database
     const sewerList = await sewerModel.find({}, '_id').distinct('_id');
+    // Subcribe to the topic that have real sewer
     client.subscribe(topic);
     console.log("subcribed topic: " + topic);
     sewerList.forEach(element => {
         let temp = "/" + element + "/controller";
-    // Subscribe to the requested topic
+    // Subscribe to all sewer's topic in database
         client.subscribe(temp);
         console.log("subcribed topic: " + temp);
     });
@@ -60,7 +62,7 @@ function startDisconnect() {
 }
 
 function sendMessage(data, topic) {
-    var message = new Paho.MQTT.Message(data);
+    var message = new Paho.Message(data);
     message.destinationName = topic;
     client.send(message);
     console.log('sending: ' + data);
@@ -75,6 +77,13 @@ module.exports.sendMessageOnSchedule = async () => {
     let hour = dateObj.getHours();
     let minute = dateObj.getMinutes();
 
+    // If a new schedule added to db, get new data from db
+    if (haveNewSchedule) {
+        schedules = await scheduleModel.find({});
+        console.log("Fetch new data successful!");
+        haveNewSchedule = false;
+    }
+
     console.log("Checking schedules....");
     if (schedules.length > 0) {
         schedules.forEach( async (item, index) => {
@@ -87,8 +96,8 @@ module.exports.sendMessageOnSchedule = async () => {
             if ((day == scheduleDateArray[2]) && (month == scheduleDateArray[1]) && (year == scheduleDateArray[0])) {
                 // console.log("sewer is scheduled today...");
                 if (hour == scheduleTimeArray[0] && minute == scheduleTimeArray[1]) {
-                    // control sewer
-                    // check if real sewer or not
+                    // Control sewer
+                    // Check if real sewer or not
                     if (scheduleSewer == "realSewer") {
                         sendMessage(`{0,${scheduleAction}}`, "controller");
                         schedules.splice(index, 1);
@@ -98,12 +107,21 @@ module.exports.sendMessageOnSchedule = async () => {
                         schedules.splice(index, 1);
                     }
 
-                    // send request to remove schedule
-                    const removedSchedule = await scheduleModel.remove({_id: scheduleId});
-
-                    isScheduleHandled = true;
+                    // Remove schedule from database
+                    const removedSchedule = await scheduleModel.deleteOne({_id: scheduleId});
+                    if(removedSchedule) {
+                        console.log("Remove schedule successful!");
+                    }
                 }
             }
         })
     }
+};
+
+module.exports.getHaveNewSchedule = () => {
+    return haveNewSchedule;
+};
+
+module.exports.setHaveNewSchedule = (value) => {
+    haveNewSchedule = value;
 };
