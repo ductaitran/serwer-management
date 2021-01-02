@@ -74,10 +74,7 @@ module.exports.addSewer = async (req, res) => {
         _id: req.body.id,
         name: req.body.name,
         description: req.body.description,
-        location: {
-            city: req.body.city,
-            district: req.body.district
-        }
+        city: req.body.city
     });
     try {
         const savedSewer = await sewer.save();

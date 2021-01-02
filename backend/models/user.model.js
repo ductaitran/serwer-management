@@ -29,9 +29,9 @@ const userSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    location: {
-        city: String,
-        district: String
+    city: {
+        type: String,
+        required: true
     }
 });
 
