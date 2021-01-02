@@ -1,6 +1,9 @@
 // Import models
 const scheduleModel = require('../models/schedule.model');
 
+// Import utils function
+const { setHaveNewSchedule } = require('../utils/mqttFunction');
+
 module.exports.getAll = async (req, res) => {
     try {
         const schedules = await scheduleModel.find({});
@@ -31,6 +34,7 @@ module.exports.addSchedule = async (req, res) => {
     });
     try {
         const savedSchedule = await schedule.save();
+        setHaveNewSchedule(true);
         res.status(201).json("Set schedule successful!");
     } catch (err) {
         res.status(500).json({
