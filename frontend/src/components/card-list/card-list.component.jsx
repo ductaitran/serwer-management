@@ -7,7 +7,7 @@ import './card-list.styles.css';
 export default function CardList(props) {
     return ( 
         <div className='card-list'>
-            {props.sewers.map(sewer => (
+            { props.sewers.map(sewer => (
                 <MediaCard key={sewer._id} sewer={sewer} /> 
             ))}            
         </div>

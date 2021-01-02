@@ -53,6 +53,9 @@ export default function MediaCard(props) {
 						<Typography variant="body2" color="textSecondary" component="p">
 							{props.sewer.description}
 						</Typography>
+						<Typography variant="body2" color="textSecondary" component="p">
+							Location: {props.sewer.city}
+						</Typography>
 					</CardContent>
 				</CardActionArea>
 				<CardActions>
