@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -24,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
 export default function MediaCard(props) {
 	const [scheduleOpen, setScheduleOpen] = useState(false);	
 	const classes = useStyles();
+	const history = useHistory();
 
 	// those function is to handle schedule component, which is child component
 	// not a good solution but help
@@ -34,6 +36,13 @@ export default function MediaCard(props) {
 	function handleCloseSchedule() {
 		setScheduleOpen(false);
 	};
+
+	function handleControl() {
+		history.push({
+			pathname: '/control',
+			state: {sewer: props.sewer}
+		})
+	}
 
 	return (
 		<div>
@@ -62,7 +71,7 @@ export default function MediaCard(props) {
 					</CardContent>
 				</CardActionArea>
 				<CardActions>
-					<Button size="small" color="primary">
+					<Button onClick={handleControl} size="small" color="primary">
 						Control
         </Button>
 					<Button onClick={handleOpenSchedule} size="small" color="primary">

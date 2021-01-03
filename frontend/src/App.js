@@ -8,6 +8,7 @@ import Header from './components/header/header.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 import MonitorPage from './pages/monitor/monitor.component';
 import SchedulePage from './pages/schedule/schedule.component';
+import ControlPage from './pages/control/control.component';
 
 import { authenticationService } from './services/authentication.service';
 import { userService } from './services/user.service';
@@ -96,7 +97,10 @@ export default function App() {
           <Admin />
         </PrivateRoute>
         <Route exact path='/contact' component={Contact} />
-        <Route component={Error} />
+        <PrivateRoute exact path='/control' roles={[Role.Admin, Role.User]}>
+          <ControlPage />
+        </PrivateRoute>
+        <Route component={Error} />        
       </Switch>
     </div>
   );
