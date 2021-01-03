@@ -28,22 +28,22 @@ module.exports.getAll = async (req, res) => {
 module.exports.getOne = async (req, res) => {
     try {
         // Check user is "Admin" or not, if true, return all sewer.
-        if (passportController.isAdmin(req.user.role)) {
+        // if (passportController.isAdmin(req.user.role)) {
             const sewers = await sewerModel.findById(req.params.sewerId);
             return res.json(sewers);
-        }
+        // }
         // If user is not "Admin", return sewer in user's location.
-        const sewerList = await getSewerByLocation(req.user.location.city);
-        let sewer = await sewerModel.find({
-            _id: {
-                $in: sewerList
-            }
-        });
-        sewer = sewer.filter(element => {
-            return element._id === req.params.sewerId;
-        });
-        if (sewer.length == 0) return res.status(400).json("Not found!");
-        res.json(sewer);
+        // const sewerList = await getSewerByLocation(req.user.location.city);
+        // let sewer = await sewerModel.find({
+        //     _id: {
+        //         $in: sewerList
+        //     }
+        // });
+        // sewer = sewer.filter(element => {
+        //     return element._id === req.params.sewerId;
+        // });
+        // if (sewer.length == 0) return res.status(400).json("Not found!");
+        // res.json(sewer);
     } catch (err) {
         res.json({
             message: err
