@@ -21,6 +21,8 @@ module.exports.checkLogin = async (req, res) => {
             name: userFound.name,
             email: userFound.email,
             role: userFound.role,
+            created_date: userFound.created_date,
+            city: userFound.city,
             accessToken: accessToken
         });
     } catch (err) {
