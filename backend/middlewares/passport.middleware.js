@@ -21,6 +21,7 @@ module.exports.isEmailAvailable = async (req, res, next) => {
             email: req.body.email
         });
         if (userFound) return res.status(409).json({message: "User is not available"});
+        req.body.role = "Guest";
         next();
     } catch (err) {
         res.json({
