@@ -14,7 +14,7 @@ const passportController = require('../controllers/passport.controller');
 const userController = require('../controllers/users.controller');
 
 router.post('/login', passportController.checkLogin);
-router.post('/register', passportMiddleware.isEmailAvailable, userController.addUser);
+router.post('/register', passportMiddleware.isEmailAvailable, passportMiddleware.isRegister, userController.addUser);
 router.use('/sewers', passportMiddleware.authenToken, sewersRoute);
 router.use('/users', passportMiddleware.authenToken, usersRoute);
 router.use('/schedules', passportMiddleware.authenToken, schedulesRoute);
