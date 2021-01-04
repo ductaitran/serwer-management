@@ -129,6 +129,46 @@ module.exports.deleteSewer = async (req, res) => {
     }
 };
 
+module.exports.updateSewer = async (req, res) => {
+    try {
+        // Store sewer location before update
+        const beforeUpdateSewerLocation = await sewerModel.findById(req.params.sewerId, 'location.city location.district');
+        // Update sewer in sewers collection
+        const updatedSewer = await sewerModel.updateOne({
+            _id: req.params.sewerId
+        }, {
+            $set: {
+                name: req.body.name,
+                description: req.body.description,
+                location: {
+                    city: req.body.city,
+                    district: req.body.district
+                }
+            }
+        });
+        if (!updatedSewer) return res.status(500).json("Cannot update this sewer!");
+        // Update sewer's location in location database
+        const removedSewersInLocation = await locationModel.updateOne({name: beforeUpdateSewerLocation.location.city, "district.name": beforeUpdateSewerLocation.location.district}, {
+            $pull: {
+                "district.$.haveSewers": req.params.sewerId
+            }
+        });
+        const addSewerIntoLocation = await locationModel.updateOne({
+            name: req.body.city,
+            "district.name": req.body.district
+        }, {
+            $push: {
+                "district.$.haveSewers": req.params.sewerId
+            }
+        });
+        res.status(200).json("Update sewer successful!");
+    } catch (err) {
+        res.status(500).json({
+            message: err
+        });
+    }
+};
+
 getSewerByLocation = async (city) => {
     // Return list of sewer by city name
     const cityList = await locationModel.findOne({
