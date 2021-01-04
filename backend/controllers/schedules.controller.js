@@ -8,22 +8,7 @@ const { setHaveNewSchedule } = require('../utils/mqttFunction');
 
 module.exports.getAll = async (req, res) => {
     try {
-        // const schedules = await scheduleModel.find({}).lean();
-        // console.log(schedules);
-        // let sewerList = await sewerModel.find();
-        // sewerList = sewerList.filter(element => {
-        //     return element.
-        // })
-        // schedules.forEach( async element => {
-        //     let temp = await sewerModel.findById(element.sewer, '_id name location.city location.district').lean();
-        //     console.log(temp);
-        //     element['sewers'] = temp;
-        //  });
-        //  console.log(schedules);
-        // sewerList.forEach(async element => {
-        //     schedules['sewer'] = await sewerModel.find({_id: element});
-        // });
-        const schedules = await scheduleModel.find({}).lean();
+        const schedules = await scheduleModel.find({}).populate('sewer', '_id name location.city location.district').lean();
         res.status(200).json(schedules);
     } catch (err) {
         res.status(500).json({
