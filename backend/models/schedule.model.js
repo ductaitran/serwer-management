@@ -15,7 +15,8 @@ const scheduleSchema = mongoose.Schema({
     },
     sewer: {
         type: String,
-        required: true
+        required: true,
+        ref: "Sewers"
     }
 });
 
