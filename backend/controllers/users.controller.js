@@ -28,7 +28,8 @@ module.exports.addUser = async (req, res) => {
         name: req.body.name,
         email: req.body.email,
         password: hashedPassword,
-        role: req.body.role
+        role: req.body.role,
+        city: req.body.city
     });
     try {
         const savedUser = await user.save();
@@ -42,7 +43,7 @@ module.exports.addUser = async (req, res) => {
 
 module.exports.deleteUser = async (req, res) => {
     try {
-        const removedUser = await UserModel.remove({email: req.body.email});
+        const removedUser = await UserModel.deleteOne({email: req.body.email});
         res.sendStatus(200);
     } catch (err) {
         res.json({message: err});

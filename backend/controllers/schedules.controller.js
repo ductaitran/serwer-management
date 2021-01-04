@@ -27,7 +27,6 @@ module.exports.getOneBySewer = async (req, res) => {
 
 module.exports.addSchedule = async (req, res) => {
     const schedule = new scheduleModel({
-        _id: req.body.id,
         date: req.body.date,
         time: req.body.time,
         action: req.body.action,
@@ -46,7 +45,7 @@ module.exports.addSchedule = async (req, res) => {
 
 module.exports.deleteSchedule = async (req, res) => {
     try {
-        const removedSchedule = await scheduleModel.remove({_id: req.params.scheduleId});
+        const removedSchedule = await scheduleModel.deleteOne({_id: req.params.scheduleId});
         res.status(200).json("Delete schedule successful!");
     } catch (err) {
         res.status(500).json({message: err});
