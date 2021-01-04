@@ -9,7 +9,7 @@ module.exports.startMQTTConnection = async () => {
 
     // Define hostname, port number and topic
     // var host = "104.155.233.176";
-    var host = "192.168.1.10";
+    var host = "localhost";
     var port = "4000";
 
     // Fetch schedule data
@@ -98,7 +98,7 @@ module.exports.sendMessageOnSchedule = async () => {
                 if (hour == scheduleTimeArray[0] && minute == scheduleTimeArray[1]) {
                     // Control sewer
                     // Check if real sewer or not
-                    if (scheduleSewer == "realSewer") {
+                    if (scheduleSewer == "sewerOnTop10") {
                         sendMessage(`{0,${scheduleAction}}`, "controller");
                         schedules.splice(index, 1);
                     }

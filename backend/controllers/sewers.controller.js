@@ -5,6 +5,9 @@ const locationModel = require('../models/location.model');
 // Import controllers
 const passportController = require('../controllers/passport.controller');
 
+// Global variable
+var newId;
+
 module.exports.getAll = async (req, res) => {
     try {
         if (passportController.isAdmin(req.user.role)) {
@@ -78,27 +81,28 @@ module.exports.getLimit = async (req, res) => {
 }
 
 module.exports.addSewer = async (req, res) => {
+    await generateId();
     const sewer = new sewerModel({
-        _id: req.body.id,
+        _id: newId,
         name: req.body.name,
         description: req.body.description,
         location: {
-            city: req.body.city,
-            district: req.body.district
+            city: req.body.location.city,
+            district: req.body.location.district
         }
     });
     try {
         const savedSewer = await sewer.save();
         if (savedSewer) {
             const addSewerIntoLocation = await locationModel.updateOne({
-                name: req.body.city,
-                "district.name": req.body.district
+                name: req.body.location.city,
+                "district.name": req.body.location.district
             }, {
                 $push: {
-                    "district.$.haveSewers": req.body.id
+                    "district.$.haveSewers": newId
                 }
             });
-            res.status(200).json("Add sewer successful!");
+            res.status(200).json({message: "Add sewer successful!"});
         };
         res.sendStatus(500).json("Cannot add this sewer!");
     } catch (err) {
@@ -141,8 +145,8 @@ module.exports.updateSewer = async (req, res) => {
                 name: req.body.name,
                 description: req.body.description,
                 location: {
-                    city: req.body.city,
-                    district: req.body.district
+                    city: req.body.location.city,
+                    district: req.body.location.district
                 }
             }
         });
@@ -154,8 +158,8 @@ module.exports.updateSewer = async (req, res) => {
             }
         });
         const addSewerIntoLocation = await locationModel.updateOne({
-            name: req.body.city,
-            "district.name": req.body.district
+            name: req.body.location.city,
+            "district.name": req.body.location.district
         }, {
             $push: {
                 "district.$.haveSewers": req.params.sewerId
@@ -186,3 +190,19 @@ getSewerByLocation = async (city) => {
     });
     return realSewerList;
 }
+
+async function generateId() {
+    let sewerListLength = await sewerModel.find().lean();
+    sewerListLength = sewerListLength.length;
+    let temp1;
+    for (let i = 0; i < sewerListLength; i++) {
+      temp1 = await sewerModel.findById(`sewerOnTop${i+1}`, '_id');
+      if (!temp1) {
+        console.log(i);
+        newId = `sewerOnTop${i + 1}`;
+        return;
+      }
+    }
+    newId = `sewerOnTop${sewerListLength + 1}`;
+    return;
+  }
