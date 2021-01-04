@@ -111,15 +111,5 @@
     "password": "$2b$10$JLYPXyLzAyT5TQwD1XB8mezxdi27Q5bTdhM3taN.LWtoifHA/F1Ei",
     "created_date": "2021-01-01T15:46:43.829Z",
     "__v": 0
-  },
-  {
-    "_id": "5ff32af0795b7b426cc4335e",
-    "role": "Admin",
-    "name": "minh",
-    "email": "gmail@minh.com",
-    "password": "$2b$10$7TD.dis03riPIvQhBmBgRupX6QzeglRnObTqE.gw61RlaYetN6h1i",
-    "city": "Can Tho",
-    "created_date": "2021-01-04T14:49:20.290Z",
-    "__v": 0
   }
 ]
