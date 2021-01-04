@@ -19,20 +19,6 @@ const useStyles = makeStyles({
 
 export default function ScheduleTable(props) {
 	const classes = useStyles();
-	const [reRender, setReRender] = useState(false)
-	const [extraSchedules, setExtraSchedules] = useState([]);
-
-	useEffect(() => {
-		props.rows.forEach((schedule, index) => {
-			sewerService.getById(schedule.sewer)
-				.then(response => {
-					console.log(response)
-					schedule.city = JSON.parse(response).location.city;
-					schedule.district = JSON.parse(response).location.district;
-					setExtraSchedules(prev => [...prev, schedule]);
-				})
-		})
-	}, [])
 
 	return (
 		<div>
@@ -56,9 +42,9 @@ export default function ScheduleTable(props) {
 								</TableCell>
 								<TableCell align="right">{row.time}</TableCell>
 								<TableCell align="right">{row.action === '0' ? 'Close' : 'Open'}</TableCell>
-								<TableCell align="right">{row.sewer}</TableCell>
-								<TableCell align="right">{row.city}</TableCell>
-								<TableCell align="right">{row.district}</TableCell>
+								<TableCell align="right">{row.sewer.name}</TableCell>
+								<TableCell align="right">{row.sewer.location.city}</TableCell>
+								<TableCell align="right">{row.sewer.location.district}</TableCell>
 								{ props.renderRemove ?
 									<TableCell align="right"><button id={row._id} onClick={props.handleRemove}>Remove</button></TableCell>
 									: null}
