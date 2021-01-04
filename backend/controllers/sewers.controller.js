@@ -104,7 +104,7 @@ module.exports.addSewer = async (req, res) => {
             });
             res.status(200).json({message: "Add sewer successful!"});
         };
-        res.sendStatus(500).json("Cannot add this sewer!");
+        res.sendStatus(500).json({message: "Cannot add this sewer!"});
     } catch (err) {
         res.json({
             message: err
@@ -125,7 +125,7 @@ module.exports.deleteSewer = async (req, res) => {
                 "district.$.haveSewers": req.params.sewerId
             }
         });
-        res.status(200).json("Delete sewer successful!");
+        res.status(200).json({message: "Delete sewer successful!"});
     } catch (err) {
         res.status(500).json({
             message: err
@@ -150,7 +150,7 @@ module.exports.updateSewer = async (req, res) => {
                 }
             }
         });
-        if (!updatedSewer) return res.status(500).json("Cannot update this sewer!");
+        if (!updatedSewer) return res.status(500).json({message: "Cannot update this sewer!"});
         // Update sewer's location in location database
         const removedSewersInLocation = await locationModel.updateOne({name: beforeUpdateSewerLocation.location.city, "district.name": beforeUpdateSewerLocation.location.district}, {
             $pull: {
@@ -165,7 +165,7 @@ module.exports.updateSewer = async (req, res) => {
                 "district.$.haveSewers": req.params.sewerId
             }
         });
-        res.status(200).json("Update sewer successful!");
+        res.status(200).json({message: "Update sewer successful!"});
     } catch (err) {
         res.status(500).json({
             message: err
