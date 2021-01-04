@@ -15,7 +15,8 @@ import './card.styles.scss'
 
 const useStyles = makeStyles((theme) => ({
 	root: {
-		maxWidth: 345,
+		maxWidth: 300,
+		maxHeight: 500
 	},
 	media: {
 		height: 100,
@@ -52,7 +53,7 @@ export default function MediaCard(props) {
 						// className={classes.media}
 						component="img"
 						height="250"
-						image={`https://robohash.org/${props.sewer._id + 4}?set=set1`}
+						image={`https://avatars.dicebear.com/api/bottts/${props.sewer._id+1}.svg?margin[]=20`}
 						title="Contemplative Reptile"
 					/>
 					<CardContent>
