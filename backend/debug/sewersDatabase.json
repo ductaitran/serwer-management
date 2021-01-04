@@ -1,0 +1,102 @@
+[
+  {
+    "_id": "sewerOnTop5",
+    "name": "SewerSG",
+    "description": "A sewer",
+    "location": {
+      "city": "Sai Gon",
+      "district": "Binh Thanh"
+    },
+    "__v": 0
+  },
+  {
+    "_id": "sewerOnTop1",
+    "name": "SewerA",
+    "description": "A sewer",
+    "location": {
+      "city": "Can Tho",
+      "district": "Ninh Kieu"
+    },
+    "__v": 0
+  },
+  {
+    "_id": "sewerOnTop2",
+    "name": "SewerB",
+    "description": "A sewer",
+    "location": {
+      "city": "Can Tho",
+      "district": "O Mon"
+    },
+    "__v": 0
+  },
+  {
+    "_id": "sewerOnTop3",
+    "name": "SewerC",
+    "description": "A sewer",
+    "location": {
+      "city": "Can Tho",
+      "district": "Tra Noc"
+    },
+    "__v": 0
+  },
+  {
+    "_id": "sewerOnTop4",
+    "name": "SewerBL",
+    "description": "A Sewer",
+    "location": {
+      "city": "Bac Lieu",
+      "district": "Vinh Loi"
+    },
+    "__v": 0
+  },
+  {
+    "_id": "sewerOnTop6",
+    "name": "sewerD",
+    "description": "A sewer",
+    "location": {
+      "city": "Can Tho",
+      "district": "Ninh Kieu"
+    },
+    "__v": 0
+  },
+  {
+    "_id": "sewerOnTop10",
+    "name": "Real Sewer",
+    "description": "A sewer",
+    "location": {
+      "city": "Can Tho",
+      "district": "Ninh Kieu"
+    },
+    "__v": 0
+  },
+  {
+    "_id": "sewerOnTop7",
+    "name": "sewerE",
+    "description": "A sewer",
+    "location": {
+      "city": "Sai Gon",
+      "district": "Phu Nhuan"
+    },
+    "__v": 0
+  },
+  {
+    "_id": "sewerOnTop11",
+    "name": "sewerABC",
+    "description": "A sewer",
+    "location": {
+      "city": "Bac Lieu",
+      "district": "Vinh Loi"
+    },
+    "__v": 0
+  },
+  {
+    "_id": "sewerOnTop12",
+    "name": "Sewer Thoi Lai",
+    "description": "Locate at downstream of Vam Nhon Lake",
+    "location": {
+      "city": "Can Tho",
+      "district": "O Mon"
+    },
+    "__v": 0
+  }
+]

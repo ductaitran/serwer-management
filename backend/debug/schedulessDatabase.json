@@ -1,0 +1,34 @@
+[
+  {
+    "_id": "5ff048fbd14d292c7cebbae9",
+    "date": "2021-01-02",
+    "time": "17:18",
+    "action": "1",
+    "sewer": "sewerOnTop5",
+    "__v": 0
+  },
+  {
+    "_id": "5ff17b57cd4c44499840577e",
+    "date": "2021-01-01",
+    "time": "16:07",
+    "action": "0",
+    "sewer": "sewerOnTop1",
+    "__v": 0
+  },
+  {
+    "_id": "5ff17f8dcd4c444998405782",
+    "date": "2021-01-02",
+    "time": "15:19",
+    "action": "1",
+    "sewer": "sewerOnTop4",
+    "__v": 0
+  },
+  {
+    "_id": "5ff180eacd4c444998405785",
+    "date": "2021-01-02",
+    "time": "22:31",
+    "action": "0",
+    "sewer": "sewerOnTop3",
+    "__v": 0
+  }
+]
