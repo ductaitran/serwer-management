@@ -33,7 +33,7 @@ module.exports.addUser = async (req, res) => {
     });
     try {
         const savedUser = await user.save();
-        res.status(201).json("Add user successful!");
+        res.status(201).json({message: "Add user successful!"});
     } catch (err) {
         res.json({
             message: err
@@ -44,7 +44,7 @@ module.exports.addUser = async (req, res) => {
 module.exports.deleteUser = async (req, res) => {
     try {
         const removedUser = await UserModel.deleteOne({email: req.body.email});
-        res.sendStatus(200);
+        res.status(200).json({message: "Delete user successful!"});
     } catch (err) {
         res.json({message: err});
     }

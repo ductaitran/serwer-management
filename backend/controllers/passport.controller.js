@@ -9,10 +9,10 @@ module.exports.checkLogin = async (req, res) => {
         const userFound = await userModel.findOne({
             email: req.body.email
         });
-        if (!userFound) return res.status(401).send("User not found!");
+        if (!userFound) return res.status(401).send({message: "User not found!"});
 
         const isPasswordMatched = await bcrypt.compare(req.body.password, userFound.password);
-        if (!isPasswordMatched) return res.status(401).send("Incorrect password!");
+        if (!isPasswordMatched) return res.status(401).send({message: "Incorrect password!"});
 
         const accessToken = jwt.sign(userFound.toObject(), process.env.ACCESS_TOKEN_SECRET, {
             expiresIn: '1h'
