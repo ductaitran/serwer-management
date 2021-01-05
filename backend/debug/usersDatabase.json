@@ -1,0 +1,115 @@
+[
+  {
+    "_id": "5fe8b9f965b51d192cb1617d",
+    "name": "Hoang Minh",
+    "email": "hminh@thesis",
+    "password": "$2b$10$hszn/ldFDQsRew4QKtLG/ef/4ovJgTyBaP.YdyNQYh.mgymsqzKUW",
+    "role": "Admin",
+    "city": "Can Tho",
+    "created_date": "2020-12-27T16:44:41.186Z",
+    "__v": 0
+  },
+  {
+    "_id": "5fe8bbbb354f3a3d48ca4fc2",
+    "name": "Duc Tai",
+    "email": "dtai@thesis",
+    "password": "$2b$10$Sn.ss24ToVrAZegRoIkBH.2yi8f0STrlcEV0lEcwF2t0sZyMPTFCW",
+    "role": "Admin",
+    "created_date": "2020-12-27T16:52:11.726Z",
+    "__v": 0
+  },
+  {
+    "_id": "5fed8569fb3e8242d400a02f",
+    "role": "Guest",
+    "name": "Hoang Tho",
+    "email": "htho@thesis",
+    "password": "$2b$10$i.TlDCYewtEwqGPDw1QLwOgmguqRIqquunTyOFrM2gLD4GoKjW9Wa",
+    "created_date": "2020-12-31T08:01:45.717Z",
+    "__v": 0
+  },
+  {
+    "_id": "5fedbf5d25051a27e0f543c3",
+    "role": "User",
+    "name": "Tran Dan",
+    "email": "tdan@thesis",
+    "password": "$2b$10$MFhhIbe/kdISSq8BrJLjieWUETqEtGdik77XQWxbIbupxMGVFpuFO",
+    "location": {
+      "city": "Can Tho",
+      "district": "Ninh Kieu"
+    },
+    "created_date": "2020-12-31T12:09:01.599Z",
+    "__v": 0
+  },
+  {
+    "_id": "5feeda205339680448d9f813",
+    "role": "Guest",
+    "name": "Ngoc Minh",
+    "email": "nminh@thesis",
+    "password": "$2b$10$fjZfBBO3so02CARAEYGxIuBDnRx8hFOwxHY.S5lJKq3xXIG.7tPgS",
+    "created_date": "2021-01-01T08:15:28.887Z",
+    "__v": 0
+  },
+  {
+    "_id": "5feedba5098d4348e8554ca5",
+    "role": "Guest",
+    "name": "Ngoc Minh2",
+    "email": "nminh2@thesis",
+    "password": "$2b$10$5GqErrXto8JwE0vXoVj02e.JQPhhQZLFDkPU4.F8nnDGXJ9lhjVA6",
+    "created_date": "2021-01-01T08:21:57.586Z",
+    "__v": 0
+  },
+  {
+    "_id": "5feedbbd098d4348e8554ca6",
+    "role": "Guest",
+    "name": "Ngoc Minh3",
+    "email": "nminh3@thesis",
+    "password": "$2b$10$97HoUgE5lh179ZngG10aiOUUQ9oU/CqjkXybapT38BEP6rTZkKURC",
+    "created_date": "2021-01-01T08:22:21.866Z",
+    "__v": 0
+  },
+  {
+    "_id": "5feedc74098d4348e8554ca7",
+    "role": "Guest",
+    "name": "Ngoc Minh4",
+    "email": "nminh4@thesis",
+    "password": "$2b$10$Tq0ncCciVxb4i.jq4R1RPeORLldJA0fT.BUns1lpWybvBlVWLSkY.",
+    "created_date": "2021-01-01T08:25:24.338Z",
+    "__v": 0
+  },
+  {
+    "_id": "5feedd35098d4348e8554ca8",
+    "role": "Guest",
+    "name": "Ngoc Minh5",
+    "email": "nminh5@thesis",
+    "password": "$2b$10$jCAqMOxe9C5TPWKn654oueeos.1XGqsq0/0YTgY0cRPaYLVFFeMbm",
+    "created_date": "2021-01-01T08:28:37.516Z",
+    "__v": 0
+  },
+  {
+    "_id": "5feee27b098d4348e8554ca9",
+    "role": "Guest",
+    "name": "Ngoc Minh6",
+    "email": "nminh6@thesis",
+    "password": "$2b$10$Q6Jk.60oq24V0/hKgvDV4O5y40riZryIn9cXTtaw6w88baK59VtO2",
+    "created_date": "2021-01-01T08:51:07.657Z",
+    "__v": 0
+  },
+  {
+    "_id": "5feee7746b244446a83e9713",
+    "role": "Guest",
+    "name": "Ngoc Minh7",
+    "email": "nminh7@thesis",
+    "password": "$2b$10$Tw0bB/fuMZYt9ZumvwbuVO4uZhZxEgRbCMSEoVxHC6s7wDITKTUMG",
+    "created_date": "2021-01-01T09:12:20.230Z",
+    "__v": 0
+  },
+  {
+    "_id": "5fef43e399d5262bc0e599c3",
+    "role": "Guest",
+    "name": "Ngoc Minh8",
+    "email": "nminh8@thesis",
+    "password": "$2b$10$JLYPXyLzAyT5TQwD1XB8mezxdi27Q5bTdhM3taN.LWtoifHA/F1Ei",
+    "created_date": "2021-01-01T15:46:43.829Z",
+    "__v": 0
+  }
+]

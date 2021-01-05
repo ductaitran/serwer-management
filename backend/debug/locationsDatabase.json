@@ -1,0 +1,64 @@
+[
+  {
+    "_id": "5feda7337a84865309196a71",
+    "name": "Can Tho",
+    "district": [
+      {
+        "name": "Ninh Kieu",
+        "haveSewers": [
+          "sewerOnTop1",
+          "sewerOnTop6",
+          "sewerOnTop10"
+        ]
+      },
+      {
+        "name": "Tra Noc",
+        "haveSewers": [
+          "sewerOnTop3"
+        ]
+      },
+      {
+        "name": "O Mon",
+        "haveSewers": [
+          "sewerOnTop2",
+          "sewerOnTop12"
+        ]
+      },
+      {
+        "name": "Binh Thuy",
+        "haveSewers": []
+      }
+    ]
+  },
+  {
+    "_id": "5fedb10c7a84865309196a75",
+    "name": "Sai Gon",
+    "district": [
+      {
+        "name": "Binh Thanh",
+        "haveSewers": [
+          "sewerOnTop5"
+        ]
+      },
+      {
+        "name": "Phu Nhuan",
+        "haveSewers": [
+          "sewerOnTop7"
+        ]
+      }
+    ]
+  },
+  {
+    "_id": "5ff069e9c2331cfd0758ef4a",
+    "name": "Bac Lieu",
+    "district": [
+      {
+        "name": "Vinh Loi",
+        "haveSewers": [
+          "sewerOnTop4",
+          "sewerOnTop11"
+        ]
+      }
+    ]
+  }
+]

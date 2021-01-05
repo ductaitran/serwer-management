@@ -28,3 +28,8 @@ module.exports.isEmailAvailable = async (req, res, next) => {
         });
     }
 };
+
+module.exports.isRegister = async (req, res, next) => {
+        req.body.role = "Guest";
+        next();
+};
