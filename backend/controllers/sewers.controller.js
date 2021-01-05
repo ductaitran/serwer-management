@@ -32,8 +32,8 @@ module.exports.getOne = async (req, res) => {
     try {
         // Check user is "Admin" or not, if true, return all sewer.
         // if (passportController.isAdmin(req.user.role)) {
-            const sewers = await sewerModel.findById(req.params.sewerId);
-            return res.json(sewers);
+        const sewers = await sewerModel.findById(req.params.sewerId);
+        return res.json(sewers);
         // }
         // If user is not "Admin", return sewer in user's location.
         // const sewerList = await getSewerByLocation(req.user.location.city);
@@ -102,9 +102,13 @@ module.exports.addSewer = async (req, res) => {
                     "district.$.haveSewers": newId
                 }
             });
-            res.status(200).json({message: "Add sewer successful!"});
+            res.status(200).json({
+                message: "Add sewer successful!"
+            });
         };
-        res.sendStatus(500).json({message: "Cannot add this sewer!"});
+        res.sendStatus(500).json({
+            message: "Cannot add this sewer!"
+        });
     } catch (err) {
         res.json({
             message: err
@@ -120,12 +124,16 @@ module.exports.deleteSewer = async (req, res) => {
         });
         if (!removedSewer) return res.status(500).json("Cannot delete this sewer!");
         // Remove sewer from all location collections have it
-        const removedSewersInLocation = await locationModel.updateMany({"district.haveSewers": req.params.sewerId}, {
+        const removedSewersInLocation = await locationModel.updateMany({
+            "district.haveSewers": req.params.sewerId
+        }, {
             $pull: {
                 "district.$.haveSewers": req.params.sewerId
             }
         });
-        res.status(200).json({message: "Delete sewer successful!"});
+        res.status(200).json({
+            message: "Delete sewer successful!"
+        });
     } catch (err) {
         res.status(500).json({
             message: err
@@ -150,9 +158,14 @@ module.exports.updateSewer = async (req, res) => {
                 }
             }
         });
-        if (!updatedSewer) return res.status(500).json({message: "Cannot update this sewer!"});
+        if (!updatedSewer) return res.status(500).json({
+            message: "Cannot update this sewer!"
+        });
         // Update sewer's location in location database
-        const removedSewersInLocation = await locationModel.updateOne({name: beforeUpdateSewerLocation.location.city, "district.name": beforeUpdateSewerLocation.location.district}, {
+        const removedSewersInLocation = await locationModel.updateOne({
+            name: beforeUpdateSewerLocation.location.city,
+            "district.name": beforeUpdateSewerLocation.location.district
+        }, {
             $pull: {
                 "district.$.haveSewers": req.params.sewerId
             }
@@ -165,7 +178,9 @@ module.exports.updateSewer = async (req, res) => {
                 "district.$.haveSewers": req.params.sewerId
             }
         });
-        res.status(200).json({message: "Update sewer successful!"});
+        res.status(200).json({
+            message: "Update sewer successful!"
+        });
     } catch (err) {
         res.status(500).json({
             message: err
@@ -174,35 +189,47 @@ module.exports.updateSewer = async (req, res) => {
 };
 
 getSewerByLocation = async (city) => {
-    // Return list of sewer by city name
-    const cityList = await locationModel.findOne({
-        name: city
-    }, 'district.haveSewers');
-    let sewerList = [],
-        realSewerList = [];
-    cityList['district'].forEach(element => {
-        sewerList = sewerList.concat(element.haveSewers);
-    });
-    sewerList.forEach(element => {
-        if (!realSewerList.includes(element)) {
-            realSewerList.push(element);
-        };
-    });
-    return realSewerList;
+    try {
+        // Return list of sewer by city name
+        const cityList = await locationModel.findOne({
+            name: city
+        }, 'district.haveSewers');
+        let sewerList = [],
+            realSewerList = [];
+        cityList['district'].forEach(element => {
+            sewerList = sewerList.concat(element.haveSewers);
+        });
+        sewerList.forEach(element => {
+            if (!realSewerList.includes(element)) {
+                realSewerList.push(element);
+            };
+        });
+        return realSewerList;
+    } catch (err) {
+        res.status(500).json({
+            message: err
+        });
+    }
 }
 
 async function generateId() {
-    let sewerListLength = await sewerModel.find().lean();
-    sewerListLength = sewerListLength.length;
-    let temp1;
-    for (let i = 0; i < sewerListLength; i++) {
-      temp1 = await sewerModel.findById(`sewerOnTop${i+1}`, '_id');
-      if (!temp1) {
-        console.log(i);
-        newId = `sewerOnTop${i + 1}`;
+    try {
+        let sewerListLength = await sewerModel.find().lean();
+        sewerListLength = sewerListLength.length;
+        let temp1;
+        for (let i = 0; i < sewerListLength; i++) {
+            temp1 = await sewerModel.findById(`sewerOnTop${i+1}`, '_id');
+            if (!temp1) {
+                console.log(i);
+                newId = `sewerOnTop${i + 1}`;
+                return;
+            }
+        }
+        newId = `sewerOnTop${sewerListLength + 1}`;
         return;
-      }
+    } catch (err) {
+        res.status(500).json({
+            message: err
+        });
     }
-    newId = `sewerOnTop${sewerListLength + 1}`;
-    return;
-  }
+}
