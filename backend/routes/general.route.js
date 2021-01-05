@@ -5,6 +5,7 @@ const router = express.Router();
 const sewersRoute = require('./sewers.route');
 const usersRoute = require('./users.route');
 const schedulesRoute = require('./schedules.route');
+const locationsRoute = require('./locations.route');
 
 // Import middlewares
 const passportMiddleware = require('../middlewares/passport.middleware');
@@ -19,6 +20,8 @@ router.use('/sewers', passportMiddleware.authenToken, sewersRoute);
 router.use('/users', passportMiddleware.authenToken, usersRoute);
 router.use('/schedules', passportMiddleware.authenToken, schedulesRoute);
 router.use('/roles', passportMiddleware.authenToken, userController.getAllRole);
+router.use('/locations', passportMiddleware.authenToken, locationsRoute);
+
 
 
 module.exports = router;

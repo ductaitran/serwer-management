@@ -49,8 +49,8 @@ module.exports.addUser = async (req, res) => {
 
 module.exports.deleteUser = async (req, res) => {
     try {
-        const removedUser = await UserModel.deleteOne({
-            email: req.body.email
+        const removedUser = await userModel.deleteOne({
+            email: req.params.email
         });
         res.status(200).json({
             message: "Delete user successful!"
@@ -71,4 +71,27 @@ module.exports.getAllRole = async (req, res) => {
             message: err
         });
     }
-}
+};
+
+module.exports.updateUser = async (req, res) => {
+    try {
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        const updatedUser = await userModel.updateOne({
+            email: req.params.userEmail
+        }, {
+            $set: {
+                name: req.body.name,
+                password: hashedPassword,
+                city: req.body.city,
+                role: req.body.role
+            }
+        });
+        res.json({
+            message: "Update user successful!"
+        })
+    } catch (err) {
+        res.status(500).json({
+            message: err
+        });
+    }
+};
