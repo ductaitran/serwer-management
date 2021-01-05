@@ -1,0 +1,17 @@
+{
+  "name": "emulator-scripts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "mqtt-test-sewerOnTop1.js",
+  "dependencies": {
+    "paho-mqtt": "^1.1.0",
+    "ws": "^7.4.2",
+    "socket.io-client": "^3.0.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tai Duc Tran",
+  "license": "ISC"
+}
