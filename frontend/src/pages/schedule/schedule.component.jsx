@@ -5,27 +5,21 @@ import ScheduleTable from '../../components/schedule-table/schedule-table.compon
 import { scheduleService } from '../../services/schedule.service';
 import { sewerService } from '../../services/sewer.service';
 
+import { Spin } from 'antd';
+import "antd/lib/spin/style/index.css";
+
 export default function SchedulePage() {
     const [schedules, setSchedules] = useState([]);
-    const [extraSchedules, setExtraSchedules] = useState([]);
-    const [rerender, setRerender] = useState(false);    
+    const [rerender, setRerender] = useState(false);
+    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {    
-        setRerender(false);             
+    useEffect(() => {
+        setRerender(false);
         scheduleService.getAll()
             .then(response => {
-                setSchedules(JSON.parse(response))                
+                setSchedules(JSON.parse(response))
+                setLoading(false);
             });
-
-        // add field [city] and [district] to schedule data to pass to ScheduleTable
-        // schedules.forEach((schedule, index) => {
-        //     sewerService.getById(schedule.sewer)
-        //         .then(response => {
-        //             schedule.city = JSON.parse(response).location.city;
-        //             schedule.district = JSON.parse(response).location.district;                       
-        //             setExtraSchedules(prev => [...prev, schedule]);                 
-        //         })            
-        // })        
 
         return () => {
             console.log('unmount');
@@ -40,7 +34,7 @@ export default function SchedulePage() {
             scheduleService.deleteById(id).then(response => {
                 console.log(response)
                 setRerender(true);
-            })           
+            })
         } else {
             console.log('cancelled');
         }
@@ -49,8 +43,9 @@ export default function SchedulePage() {
 
     return (
         <div>
-            <h1>Schedule Page</h1>
+            <h1>Schedule Page</h1>            
             <ScheduleTable rows={schedules} renderRemove={false} handleRemove={handleRemoveClick} />
+            <Spin size="large" spinning={loading} />
         </div>
     )
 }

@@ -55,7 +55,7 @@ run = async () => {
 
 // Socketio connection
 io.on('connection', (socket) => {
-    console.log('client connected | ' + socket.id);
+    console.log('socket client connected | ' + socket.id);
 
     socket.on('image-channel', img => {
         // console.log(img);
@@ -72,7 +72,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        console.log('client disconnected | ' + socket.id);
+        console.log('socket client disconnected | ' + socket.id);
     });
 });
 

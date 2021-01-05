@@ -22,7 +22,7 @@ export default function ScheduleTable(props) {
 
 	return (
 		<div>
-			{(props.rows.length > 0) ? (<TableContainer component={Paper}>
+			<TableContainer component={Paper}>
 				<Table className={classes.table} aria-label="simple table">
 					<TableHead>
 						<TableRow>
@@ -52,7 +52,7 @@ export default function ScheduleTable(props) {
 						))}
 					</TableBody>
 				</Table>
-			</TableContainer>) : (<h2>No data</h2>)}
+			</TableContainer>
 		</div>
 
 	);

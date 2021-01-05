@@ -32,11 +32,7 @@ function SignIn() {
 
     function signIn() {
         authenticationService.signin(email, password)
-            .then(result => { 
-                // tata.success('Welcome back', JSON.parse(result).name, {
-                //     animate: 'slide',                    
-                //     position: 'mr'
-                // });                
+            .then(result => {                               
                 history.push('/') 
                 window.location.reload();
             })
