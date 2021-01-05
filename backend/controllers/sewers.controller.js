@@ -232,4 +232,9 @@ async function generateId() {
             message: err
         });
     }
+};
+
+module.exports.getAllSewerId = async () => {
+    let sewerList = await sewerModel.find().distinct('_id').lean();
+    return sewerList;
 }
