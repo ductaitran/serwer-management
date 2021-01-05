@@ -4,13 +4,15 @@ import socketIOClient from 'socket.io-client';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
 
 import ScheduleTable from '../../components/schedule-table/schedule-table.component';
 import ScheduleContainer from '../../components/schedule-container/schedule-container.component';
 
 import { scheduleService } from '../../services/schedule.service';
 
-import { Row as AntRow, Col, Slider, Switch } from 'antd';
+import { Slider, Switch } from 'antd';
 // import "antd/lib/slider/style/index.css";
 import 'antd/lib/slider/style/index.css';
 import 'antd/lib/switch/style/index.css';
@@ -25,277 +27,358 @@ import { ReactComponent as DownButton } from '../../assets/down-arrow.svg';
 import { ReactComponent as StopButton } from '../../assets/stop-button.svg';
 
 function rand() {
-    return Math.round(Math.random() * 20) - 10;
+	return Math.round(Math.random() * 20) - 10;
 }
 
 function getModalStyle() {
-    const top = 50 + rand();
-    const left = 50 + rand();
+	const top = 50 + rand();
+	const left = 50 + rand();
 
-    return {
-        top: `${top}%`,
-        left: `${left}%`,
-        transform: `translate(-${top}%, -${left}%)`,
-    };
+	return {
+		top: `${top}%`,
+		left: `${left}%`,
+		transform: `translate(-${top}%, -${left}%)`,
+	};
 }
 
 const useStyles = makeStyles((theme) => ({
-    paper: {
-        position: 'absolute',
-        width: 900,
-        backgroundColor: theme.palette.background.paper,
-        border: '2px solid #000',
-        boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
-    },
+	root: {
+		flexGrow: 1,
+	},
+	paper: {
+		position: 'absolute',
+		width: 900,
+		backgroundColor: theme.palette.background.paper,
+		border: '2px solid #000',
+		boxShadow: theme.shadows[5],
+		padding: theme.spacing(2, 4, 3),
+	},
 }));
 
 var mqtt = require('mqtt');
 
 export default function ControlPage({ ...props }) {
-    const classes = useStyles();
-    const location = useLocation();
-    const [modalStyle] = React.useState(getModalStyle);
+	const classes = useStyles();
+	const location = useLocation();
+	const [modalStyle] = React.useState(getModalStyle);
+	const [rerender, setRerender] = useState(false);
 
-    // state to control view schedule modal
-    const [scheduleViewOpen, setScheduleViewOpen] = useState(false);
+	// state to control view schedule modal
+	const [scheduleViewOpen, setScheduleViewOpen] = useState(false);
 
-    // state to control set schedule modal
-    const [scheduleSetOpen, setScheduleSetOpen] = useState(false);
+	// state to control set schedule modal
+	const [scheduleSetOpen, setScheduleSetOpen] = useState(false);
 
-    // schedule data
-    const [schedules, setSchedules] = useState([]);
+	// schedule data
+	const [schedules, setSchedules] = useState([]);
 
-    // slider value
-    const [sliderValue, setSliderValue] = useState(0);
+	// distance slider value
+	const [distSliderValue, setDistSliderValue] = useState(0);
 
-    // socket    
-    const [socketEnable, setSocketEnable] = useState(false);
-    const [socket, setSocket] = useState(null);
-    const [socketData, setSocketData] = useState('');
+	// current distance slider value
+	const [curDistSliderValue, setCurDistSliderValue] = useState(0);
 
-    // mqtt
-    const [mqttEnable, setMqttEnable] = useState(false);
-    const [mqttClient, setMqttClient] = useState(null);
-    const [mqttMessage, setMqttMessage] = useState('');
+	// socket    
+	const [socketEnable, setSocketEnable] = useState(false);
+	const [socket, setSocket] = useState(null);
+	const [socketData, setSocketData] = useState('');
+
+	// mqtt
+	const [mqttEnable, setMqttEnable] = useState(false);
+	const [mqttClient, setMqttClient] = useState(null);
+	const [mqttMessage, setMqttMessage] = useState([]);
+	const [mqttDistanceMessage, setMqttDistanceMessage] = useState(0);
+	const [mqttModeMessage, setMqttModeMessage] = useState('');
+	const [mqttStateMessage, setMqttStateMessage] = useState('');
 
 
-    // hande set schedule actions
-    useEffect(() => {
-        scheduleService.getById(location.state.sewer._id)
-            .then(response => {
-                setSchedules(JSON.parse(response))
-            });
-    })
+	// hande set schedule actions
+	useEffect(() => {
+		setRerender(false);
+		scheduleService.getById(location.state.sewer._id)
+			.then(response => {
+				setSchedules(JSON.parse(response))
+			});
+	}, [schedules.length, rerender])
 
-    function handleOpenSetSchedule() {
-        setScheduleSetOpen(true);
-    }
+	function handleOpenSetSchedule() {
+		setScheduleSetOpen(true);
+	}
 
-    function handleCloseSetSchedule() {
-        setScheduleSetOpen(false);
-    };
+	function handleCloseSetSchedule() {
+		setScheduleSetOpen(false);
+	};
 
-    // handle view schedule action
-    function handleOpenViewSchedule() {
-        setScheduleViewOpen(true);
-    }
+	// handle view schedule action
+	function handleOpenViewSchedule() {
+		setRerender(true);
+		setScheduleViewOpen(true);
+	}
 
-    function handleCloseViewSchedule() {
-        setScheduleViewOpen(false);
-    };
-    ////////////////////////////////////////////////
+	function handleCloseViewSchedule() {
+		setScheduleViewOpen(false);
+	};
+	////////////////////////////////////////////////
 
-    const handleRemoveClick = (e) => {
-        // remove schedule
-        let id = e.currentTarget.getAttribute("id");
-        console.log(id);
+	const handleRemoveClick = (e) => {
+		// remove schedule
+		let id = e.currentTarget.getAttribute("id");
+		console.log(id);
 
-        if (window.confirm('Are you sure you want to delete this item?')) {
-            scheduleService.deleteById(id).then(response => {
-                console.log(response)
-                // setRerender(true);
-            })
-        } else {
-            console.log('cancelled');
-        }
+		if (window.confirm('Are you sure you want to delete this item?')) {
+			scheduleService.deleteById(id).then(response => {
+				console.log(response)
+				setRerender(true);
+			})
+		} else {
+			console.log('cancelled');
+		}
 
-    }
-    ////////////////////////////////////////////////
+	}
+	////////////////////////////////////////////////
 
-    // handle socket actions
-    useEffect(() => {
-        if (socket !== null) {
-            socket.on('imageSend', (data) => {
-                setSocketData(data);
-                // console.log(socketData);
-            })
-        }
+	// handle socket actions
+	useEffect(() => {
+		if (socket !== null) {
+			socket.on('imageSend', (data) => {
+				setSocketData(data);
+				// console.log(socketData);
+			})
+		}
 
-    }, [socketData, socket])
+	}, [socketData, socket])
 
-    useEffect(() => {
-        if (socketEnable) {
-            handleSocketConnect();
-        } else {
-            handleSocketDisconnect();
-        }
-    }, [socketEnable])
+	useEffect(() => {
+		if (socketEnable) {
+			handleSocketConnect();
+		} else {
+			handleSocketDisconnect();
+		}
+	}, [socketEnable])
 
-    function handleSocketConnect() {
-        setSocket(socketIOClient('http://localhost:3000/'))
-    }
+	function handleSocketConnect() {
+		setSocket(socketIOClient('http://localhost:3000/'))
+	}
 
-    function handleSocketDisconnect() {
-        if (socket) {
-            if (socket) {
-                socket.disconnect();
-                setSocket(null);
-                setSocketData(0);
-            }
-        }
-    }
-    function handleSocketSwitch(checked) {
-        setSocketEnable(checked);
-    }
+	function handleSocketDisconnect() {
+		if (socket) {
+			if (socket) {
+				socket.disconnect();
+				setSocket(null);
+				setSocketData(0);
+			}
+		}
+	}
+	function handleSocketSwitch(checked) {
+		setSocketEnable(checked);
+	}
 
-    ////////////////////////////////////////////////
+	////////////////////////////////////////////////
 
-    // Sewer control plane
-    // init mqtt connection
-    useEffect(() => {
-        if (mqttEnable) {
-            let options = {
-                protocol: 'http',
-                // clientId uniquely identifies client
-                // choose any string you wish
-                clientId: location.state.sewer._id + "_client"
-            };
-            setMqttClient(mqtt.connect('http://localhost:4000', options));
+	// Sewer control plane
+	// init mqtt connection
+	const controlTopic = location.state.sewer._id + "/controller";
+	const infoTopic = location.state.sewer._id + "/info";
+	useEffect(() => {
+		console.log(mqttEnable);
+		if (mqttEnable) {			
+			let options = {
+				protocol: 'http',
+				// clientId uniquely identifies client
+				// choose any string you wish
+				clientId: location.state.sewer._id + "_client"
+			};
+			setMqttClient(mqtt.connect('http://localhost:4000', options));
 
-            // subscribe topic
-            if (mqttClient !== null) {
-                handleMqttSubscribe();
-            }
-        } else {
-            if (mqttClient !== null) {
-                mqttClient.end()
-                setMqttClient(null);
-            }
-        }
-    }, [mqttEnable])
+			// // subscribe topic
+			// if (mqttClient !== null) {
+			// 	console.log('connected');
+			// 	// console.log(mqttMessage);
+			// 	// console.log(mqttClient);
+			// 	handleMqttSubscribe();
+			// }
+		} else {
+			if (mqttClient !== null) {
+				mqttClient.end(true)
+				setMqttClient(null);
+				setMqttMessage([]);
+			}
+		}
+	}, [mqttEnable])
 
-    useEffect(() => {
-        if (mqttClient !== null) {
-            mqttClient.on('message', function (topic, message) {
+	useEffect(() => {
+		console.log(mqttClient);
+		// subscribe topic
+		if (mqttClient !== null) {
+			console.log('connected');
+			handleMqttSubscribe();
+		}
+		
+	}, [mqttClient])
 
-                // update mqttMessage state
-                setMqttMessage(message.toString())
-                console.log(mqttMessage);
-            });
-        }
-    }, [mqttMessage])
+	useEffect(() => {
+		console.log(mqttMessage);
+		console.log(mqttClient);
+		if (mqttClient !== null) {		
+			mqttClient.on('message', function (topic, message) {				
 
-    function handleMqttSubscribe() {
-        // if (mqttClient !== null) {
-        let controlTopic = location.state.sewer._id + "/controller"
-        let infoTopic = location.state.sewer._id + "/info"
+				// update mqttMessage state
+				setMqttMessage(mqttMessage.concat(message.toString()));
+				// setMqttMessage(topic.toString())
+				console.log(mqttMessage);
+				// console.log(topic.toString());
 
-        console.log('mqtt connected');
-        console.log('control topic: ' + controlTopic);
+				if (topic.toString() === infoTopic) {
+					let info = message.toString();
+					let infoLength = info.length;
+					let infoExtract = info.slice(1, infoLength - 1);
+					infoExtract = infoExtract.split(',');
+					setMqttDistanceMessage(infoExtract[0]); //current distance
+					setMqttModeMessage(infoExtract[1]); // mode
+					setMqttStateMessage(infoExtract[2]); // state
+				}
+			});
+		}
+	}, [mqttMessage])
 
-        // subcribes
-        mqttClient.subscribe(controlTopic);
-        mqttClient.subscribe(infoTopic);
-        // }
-    }
+	function handleMqttSubscribe() {		
+		console.log('control topic: ' + controlTopic);
+		console.log('info topic: ' + infoTopic);
 
-    function handleMqttSwitch(checked) {
-        setMqttEnable(checked);
-    }
+		// subcribes
+		mqttClient.subscribe([controlTopic, infoTopic], (err, granted) => {
+			console.log(err);
+			console.log(granted);
+		});
+		// mqttClient.subscribe(infoTopic);
+	}
 
-    function handleSliderChange(value) {
-        setSliderValue(value);
-    }
+	function handleMqttSwitch(checked) {		
+		setMqttEnable(checked);
+	}
 
-    function handleOpenSewer(e) {
-        if (mqttClient !== null) {
-            mqttClient.publish('controller', 'up')
-            mqttClient.publish(location.state.sewer._id + "/controller", `{${sliderValue}, 1}`)
-            console.log(`{${sliderValue}, 1}`);
-        }
-    }
+	function handleDistSliderChange(value) {
+		setDistSliderValue(value);
+	}
 
-    function handleCloseSewer(e) {
-        if (mqttClient !== null) {
-            mqttClient.publish('controller', 'down')
-            mqttClient.publish(location.state.sewer._id + "/controller", `{${sliderValue}, 0}`)
-            console.log(`{${sliderValue}, 0}`);
-        }
-    }
+	function handleOpenSewer(e) {
+		if (mqttClient !== null) {
+			// mqttClient.publish('controller', 'up')
+			mqttClient.publish(location.state.sewer._id + "/controller", `{${distSliderValue}, 1}`)
+			console.log(`{${distSliderValue}, 1}`);
+		}
+	}
 
-    function handleStopSewer(e) {
-        if (mqttClient !== null) {
-            mqttClient.publish('controller', 'stop')
-            mqttClient.publish(location.state.sewer._id + "/controller", `{${sliderValue}, 2}`)
-            console.log(`{${sliderValue}, 2}`);
-        }
-    }
-    ////////////////////////////////////////////////
+	function handleCloseSewer(e) {
+		if (mqttClient !== null) {
+			// mqttClient.publish('controller', 'down')
+			mqttClient.publish(location.state.sewer._id + "/controller", `{${distSliderValue}, 0}`)
+			console.log(`{${distSliderValue}, 0}`);
+		}
+	}
 
-    return (
-        <div>
-            <h3>{location.state.sewer.name} - [{location.state.sewer._id}]</h3>
+	function handleStopSewer(e) {
+		if (mqttClient !== null) {
+			// mqttClient.publish('controller', 'stop')
+			mqttClient.publish(location.state.sewer._id + "/controller", `{${distSliderValue}, 2}`)
+			console.log(`{${distSliderValue}, 2}`);
+		}
+	}
+	////////////////////////////////////////////////
 
-            {/* <button onClick={handleSocketConnect}>Start socket</button>
-            <button onClick={handleSocketDisconnect}>Disconnect socket</button> */}
-            
-            <AntRow>
-                <Col span={18}>
-                    <Switch defaultChecked={false} onChange={handleSocketSwitch} />
-                    <div>message from socket: {socketData}</div>
-                    <div className="video-section">
-                        <img style={{ maxWidth: "70%", height: "auto" }} id='image' src="https://i.imgur.com/BJ8MUCG.jpg" alt="" />
-                    </div>
-                </Col>
-                <Col span={6}>
-                    <div>
-                        <Switch defaultChecked={false} onChange={handleMqttSwitch} />
-                        <div style={{ width: "200px" }}>
-                            <Slider min={0} max={20} onChange={handleSliderChange} />
-                            <div>{sliderValue}</div>
-                        </div>
-                        <div>
-                            <AntRow>
-                                <UpButton onClick={handleOpenSewer} />
-                            </AntRow>
-                            <AntRow>
-                                <StopButton onClick={handleStopSewer} />
-                            </AntRow>
-                            <AntRow>
-                                <DownButton onClick={handleCloseSewer} />
-                            </AntRow>
+	return (
+		<div className={classes.root}>
+			<h3>{location.state.sewer.name} - [{location.state.sewer._id}]</h3>
+			<Grid container spacing={6}>
 
-                        </div>
-                        <button onClick={handleOpenViewSchedule}>Show Schedule</button>
-                        <button onClick={handleOpenSetSchedule}>Set Schedule</button>
-                    </div>
-                </Col>
-            </AntRow>
+				<Grid item xs={6}>
+					<Grid container spacing={3}>
+						<Grid item xs={12}>
+							<Switch defaultChecked={false} onChange={handleSocketSwitch} />
+						</Grid>
+						<Grid item xs={12}>
+							<div className="video-section">
+								<img style={{ maxWidth: "10 0%", height: "500px" }} id='image' src="https://i.imgur.com/BJ8MUCG.jpg" alt="" />
+							</div>
+						</Grid>
+					</Grid>
+				</Grid>
 
-            <Modal
-                {...props}
-                open={scheduleViewOpen}
-                onClose={handleCloseViewSchedule}
-                aria-labelledby="simple-modal-title"
-                aria-describedby="simple-modal-description"
-            >
-                <div style={modalStyle} className={classes.paper}>
-                    <h2 id="simple-modal-title">Schedule of {location.state.sewer.name}</h2>
-                    <ScheduleTable rows={schedules} renderRemove={true} handleRemove={handleRemoveClick} />
-                </div>
-            </Modal>
-            <ScheduleContainer open={scheduleSetOpen} onClose={handleCloseSetSchedule} sewer={location.state.sewer} />
-        </div>
-    )
+				<Grid item xs={6}>
+					<Grid container
+						direction="column"
+						justify="flex-end"
+						alignItems="center"
+						spacing={6}
+					>
+						<Grid item xs={12}>
+							<Grid container spacing={2}>
+
+								<Grid item>
+									<label>Control</label>
+								</Grid>
+								<Grid item>
+									<Switch defaultChecked={false} onChange={handleMqttSwitch} />
+								</Grid>
+
+							</Grid>
+						</Grid>
+
+						<Grid item xs={12}>
+							<Grid container>
+								<Grid item xs={12}>
+									<div>
+										<label>Current distance: {mqttDistanceMessage} cm</label>
+										<Slider min={0} max={20} tooltipVisible={false} disabled={true} />
+									</div>
+								</Grid>
+								<Grid item xs={12}>
+									<div>
+										<label>Distance: {distSliderValue} cm</label>
+										<Slider min={0} max={20} tooltipVisible={false} onChange={handleDistSliderChange} />
+									</div>
+								</Grid>
+							</Grid>
+						</Grid>
+
+						<Grid item xs={12}>
+							<Grid
+								container
+								direction="column"
+								justify="center"
+								alignItems="center"
+								spacing={3}>
+
+								<Grid item xs={12}><UpButton onClick={handleOpenSewer} /></Grid>
+								<Grid item xs={12}><StopButton onClick={handleStopSewer} /></Grid>
+								<Grid item xs={12}><DownButton onClick={handleCloseSewer} /></Grid>
+								<Grid item xs={12}>
+									<button onClick={handleOpenViewSchedule}>Show Schedule</button>
+								</Grid>
+								<Grid item xs={12}>
+									<button onClick={handleOpenSetSchedule}>Set Schedule</button>
+								</Grid>
+							</Grid>
+						</Grid>
+					</Grid>
+
+				</Grid>
+			</Grid>
+
+
+			<Modal
+				{...props}
+				open={scheduleViewOpen}
+				onClose={handleCloseViewSchedule}
+				aria-labelledby="simple-modal-title"
+				aria-describedby="simple-modal-description"
+			>
+				<div style={modalStyle} className={classes.paper}>
+					<h2 id="simple-modal-title">Schedule of {location.state.sewer.name}</h2>
+					<ScheduleTable rows={schedules} renderRemove={true} handleRemove={handleRemoveClick} />
+				</div>
+			</Modal>
+			<ScheduleContainer open={scheduleSetOpen} onClose={handleCloseSetSchedule} sewer={location.state.sewer} />
+		</div >
+	)
 }
