@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Switch, Route, useHistory } from 'react-router-dom';
 import PrivateRoute from './utils/privateRoute';
 
+// import 'antd/dist/antd.css';
 import './App.css';
 
 import Header from './components/header/header.component';
