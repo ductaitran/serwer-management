@@ -21,7 +21,8 @@ function SignUp() {
             name: name,
             email: email,
             password: password,
-            role: Role.Guest
+            role: Role.Guest,
+            location: {}
         });
     }, [name, email, password, confirmPassword]);
 

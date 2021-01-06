@@ -4,7 +4,8 @@ import { handleResponse } from '../helpers/handle-response';
 export const userService = {
     getAll,
     getByEmail,
-    register
+    register,
+    add
 }
 
 const requestGetOptions = {
@@ -51,4 +52,8 @@ function getByEmail(email) {
 
 function register(body) {
     return fetch(`http://localhost:3000/api/register/`, requestRegisterOptions(body)).then(handleResponse);
+}
+
+function add(body) {
+    return fetch(`http://localhost:3000/api/users/`, requestPostOptions(body)).then(handleResponse);
 }

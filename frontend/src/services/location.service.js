@@ -1,12 +1,12 @@
 import { authHeader } from '../helpers/auth-header';
 import { handleResponse } from '../helpers/handle-response';
 
-export const sewerService = {
+export const locationService = {
     getAll,
-    getById,
+    getDistrictByCity,
     add,
-    deleteById,
-    updateById
+    // deleteById,
+    // updateById
 }
 
 const requestOptions = {
@@ -45,21 +45,21 @@ const requestUpdateOptions = {
 }
 
 function getAll() {    
-    return fetch(`http://localhost:3000/api/sewers`, requestOptions).then(handleResponse);
+    return fetch(`http://localhost:3000/api/locations`, requestOptions).then(handleResponse);
 }
 
-function getById(id) {    
-    return fetch(`http://localhost:3000/api/sewers/${id}`, requestOptions).then(handleResponse);
+function getDistrictByCity(city) {    
+    return fetch(`http://localhost:3000/api/locations/${city}`, requestOptions).then(handleResponse);
 }
 
 function add(body) {
-    return fetch(`http://localhost:3000/api/sewers/`, requestPostOptions(body)).then(handleResponse);
+    return fetch(`http://localhost:3000/api/locations/`, requestPostOptions(body)).then(handleResponse);
 }
 
-function deleteById(id) {
-    return fetch(`http://localhost:3000/api/sewers/${id}`, requestDeleteOptions).then(handleResponse);
-}
+// function deleteById(id) {
+//     return fetch(`http://localhost:3000/api/locations/${id}`, requestDeleteOptions).then(handleResponse);
+// }
 
-function updateById(id) {
-    return fetch(`http://localhost:3000/api/sewers/${id}`, requestUpdateOptions).then(handleResponse);
-}
+// function updateById(id) {
+//     return fetch(`http://localhost:3000/api/locations/${id}`, requestUpdateOptions).then(handleResponse);
+// }
