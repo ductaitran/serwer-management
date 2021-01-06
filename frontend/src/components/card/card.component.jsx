@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function MediaCard(props) {
-	const [scheduleOpen, setScheduleOpen] = useState(false);	
+	const [scheduleOpen, setScheduleOpen] = useState(false);
 	const classes = useStyles();
 	const history = useHistory();
 
@@ -41,19 +41,19 @@ export default function MediaCard(props) {
 	function handleControl() {
 		history.push({
 			pathname: '/control',
-			state: {sewer: props.sewer}
+			state: { sewer: props.sewer }
 		})
 	}
 
 	return (
 		<div>
-			<Card className={classes.root}>
-				<CardActionArea>
+			<Card className={classes.root} >
+				<CardActionArea onClick={handleControl}>
 					<CardMedia
 						// className={classes.media}
 						component="img"
 						height="250"
-						image={`https://avatars.dicebear.com/api/bottts/${props.sewer._id+1}.svg?margin[]=20`}
+						image={`https://avatars.dicebear.com/api/jdenticon/${props.sewer._id + 1}.svg?margin[]=20`}
 						title="Contemplative Reptile"
 					/>
 					<CardContent>
@@ -80,7 +80,7 @@ export default function MediaCard(props) {
         </Button>
 				</CardActions>
 			</Card>
-			<ScheduleContainer open={scheduleOpen} onClose={handleCloseSchedule} sewer={props.sewer}/>
+			<ScheduleContainer open={scheduleOpen} onClose={handleCloseSchedule} sewer={props.sewer} />
 		</div>
 	);
 }
