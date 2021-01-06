@@ -19,15 +19,18 @@ export default function MonitorPage() {
         sewerService.getAll()
             .then(result => {
                 setSewers(JSON.parse(result))
-                setLoading(false);
+                setLoading(false);                
             });
 
         setFilteredSewers(sewers.filter(sewer =>
-            sewer.location.city.toLowerCase().includes(searchField.toLowerCase()))
+            sewer.location.city.toLowerCase().includes(searchField.toLowerCase())
+            || sewer.location.district.toLowerCase().includes(searchField.toLowerCase())
+            || sewer.name.toLowerCase().includes(searchField.toLowerCase())
+            )
         )
 
         return () => {
-            console.log('unmount')
+            // console.log('unmount')
             setLoading(false)
         }
     }, [searchField, sewers.length]);
@@ -40,7 +43,7 @@ export default function MonitorPage() {
         <div>
             <h1>Monitor Page</h1>
             <SearchBox
-                placeholder='Search by location...'
+                placeholder='Type anything to search...'
                 handleChange={handleChange}
             />
             <CardList sewers={filteredSewers} />
