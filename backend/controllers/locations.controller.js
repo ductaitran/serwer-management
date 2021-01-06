@@ -12,9 +12,9 @@ module.exports.getAll = async (req, res) => {
     }
 };
 
-module.exports.getOne = async (req, res) => {
+module.exports.getDistrictInCity = async (req, res) => {
     try {
-        const location = await locationModel.findOne({name: req.params.city}, 'name district.name').lean();
+        const location = await locationModel.findOne({name: req.params.city}).distinct('district.name').lean();
         res.json(location);
     } catch (err) {
         res.status(500).json({
