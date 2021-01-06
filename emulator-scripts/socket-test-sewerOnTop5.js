@@ -1,4 +1,12 @@
+/**
+ * This script is to emulate a sewer
+ * Sewer name: SewerSG
+ * Sewer id: sewerOnTop5
+ */
+
 var socket = require('socket.io-client')('http://localhost:3000');
+
+var streamChannel = 'sewerOnTop5/image-channel';
 
 var counter = 0;
 
@@ -7,7 +15,7 @@ socket.on('connect', () => {
     setInterval(() => {
         counter ++;        
         console.log('send to server: ' + counter);
-        socket.emit('image-channel', counter);
+        socket.emit(streamChannel, counter);
     }, 900)
 });
 

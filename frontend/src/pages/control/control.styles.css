@@ -1,0 +1,32 @@
+.video-section-enable {
+    padding: 10px;
+    text-align: center;    
+}
+
+.video-section-disable {
+    padding: 10px;
+    text-align: center;
+    /* Add the blur effect */
+    filter: blur(8px);
+    -webkit-filter: blur(8px);
+}
+
+#image {
+    max-width: 100%;    
+}
+
+.action-btn {
+    /* opacity: 0.3; */    
+}
+
+.action-btn:hover {
+    opacity: 1;
+}
+
+.action-btn-active {
+    opacity: 1;
+}
+
+.action-btn-inActive {
+    opacity: 0.3;
+}
