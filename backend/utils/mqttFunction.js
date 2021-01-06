@@ -47,12 +47,12 @@ async function onConnect() {
     const sewerList = await sewerModel.find({}, '_id').distinct('_id');
     // Subcribe to the topic that have real sewer
     client.subscribe(topic);
-    console.log("subcribed topic: " + topic);
+    console.log("subcribe to topic: " + topic);
     sewerList.forEach(element => {
         let temp = "/" + element + "/controller";
     // Subscribe to all sewer's topic in database
         client.subscribe(temp);
-        console.log("subcribed topic: " + temp);
+        console.log("subcribe to topic: " + temp);
     });
 }
 
@@ -84,7 +84,7 @@ module.exports.sendMessageOnSchedule = async () => {
         haveNewSchedule = false;
     }
 
-    console.log("Checking schedules....");
+    // console.log("Checking schedules....");
     if (schedules.length > 0) {
         schedules.forEach( async (item, index) => {
             let scheduleId = item['id'];

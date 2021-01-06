@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 
 const locationSchema = mongoose.Schema({
-    name: String,
+    name: {
+        type:String,
+        required: true
+    },
     district: [{
         name: String,
         haveSewers: [String]

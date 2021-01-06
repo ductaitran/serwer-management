@@ -20,4 +20,7 @@ router.post('/', passportMiddleware.isEmailAvailable, userController.addUser);
 // Delete routes
 router.delete('/:userEmail', userController.deleteUser);
 
+// Update routes (Put/Patch)
+router.put('/:userEmail', userController.updateUser);
+
 module.exports = router;

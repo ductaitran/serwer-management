@@ -19,6 +19,9 @@ app.use(cors());
 // Debug functions
 const { writeToFile } = require('./debug/toFile');
 
+// Socketio help functions
+const { getAllSewerId } = require('./controllers/sewers.controller');
+
 // Socketio
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
@@ -47,34 +50,41 @@ mongoose.connect(
 run = async () => {
     await mqtt.startMQTTConnection();
     mqtt.setHaveNewSchedule(false);
+    var sewerIdList = await getAllSewerId();
     var scheduleInterval = setInterval(mqtt.sendMessageOnSchedule, 500);
+    // Socketio connection
+    io.on('connection', (socket) => {
+        console.log('socket client connected | ' + socket.id);
+        sewerIdList.forEach(element => {
+            socket.on(`${element}/image-channel`, img => {
+                // console.log(img);
+                io.emit(`${element}/imageSend`, img);
+                // io.emit('received', 1);
+            });
+        })
+
+        socket.on(`image-channel`, img => {
+            // console.log(img);
+            io.emit(`imageSend`, img);
+            // io.emit('received', 1);
+        });
+
+        socket.on('connect_failed', function(err){
+            console.log('connection failed: ',err);
+        });
+
+        socket.on('error', function(err){
+            console.log('error: ', err);
+        });
+
+        socket.on('disconnect', () => {
+            console.log('socket client disconnected | ' + socket.id);
+        });
+    });
 };
 
 // Conflict with nodemon, if you want to get newest database: run it one time then comment it again.
 // writeToFile();
-
-// Socketio connection
-io.on('connection', (socket) => {
-    console.log('socket client connected | ' + socket.id);
-
-    socket.on('image-channel', img => {
-        // console.log(img);
-        io.emit('imageSend', img);
-        io.emit('received', 1);
-    });
-
-    socket.on('connect_failed', function(err){
-        console.log('connection failed: ',err);
-    });
-
-    socket.on('error', function(err){
-        console.log('error: ', err);
-    });
-
-    socket.on('disconnect', () => {
-        console.log('socket client disconnected | ' + socket.id);
-    });
-});
 
 // listen for requests :)
 const listener = server.listen(app.get('port'), () => {
