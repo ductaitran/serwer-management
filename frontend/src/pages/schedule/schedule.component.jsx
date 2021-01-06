@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import ScheduleTable from '../../components/schedule-table/schedule-table.component';
+import {ScheduleTable} from '../../components/schedule-table/schedule-table.component';
 
 import { scheduleService } from '../../services/schedule.service';
 

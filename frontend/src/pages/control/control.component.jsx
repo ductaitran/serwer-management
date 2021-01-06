@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Grid from '@material-ui/core/Grid';
 
-import ScheduleTable from '../../components/schedule-table/schedule-table.component';
+import { ScheduleTable } from '../../components/schedule-table/schedule-table.component';
 import ScheduleContainer from '../../components/schedule-container/schedule-container.component';
 
 import { scheduleService } from '../../services/schedule.service';
@@ -152,7 +152,7 @@ export default function ControlPage({ ...props }) {
 					strImg += String.fromCharCode(bytes[i]);
 				}
 				setImgSrc(`data:image/jpeg;base64,${strImg}`);
-				console.log(imgSrc);								
+				console.log(imgSrc);
 			})
 		}
 
