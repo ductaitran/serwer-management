@@ -34,7 +34,10 @@ module.exports.addUser = async (req, res) => {
             email: req.body.email,
             password: hashedPassword,
             role: req.body.role,
-            city: req.body.city
+            location: {
+                city: req.body.location.city,
+                district: req.body.location.district
+            }
         });
         const savedUser = await user.save();
         res.status(201).json({
@@ -50,7 +53,7 @@ module.exports.addUser = async (req, res) => {
 module.exports.deleteUser = async (req, res) => {
     try {
         const removedUser = await userModel.deleteOne({
-            email: req.params.email
+            email: req.params.userEmail
         });
         res.status(200).json({
             message: "Delete user successful!"
