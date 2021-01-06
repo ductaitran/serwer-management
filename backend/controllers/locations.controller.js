@@ -12,6 +12,17 @@ module.exports.getAll = async (req, res) => {
     }
 };
 
+module.exports.getOne = async (req, res) => {
+    try {
+        const location = await locationModel.findOne({name: req.params.city}, 'name district.name').lean();
+        res.json(location);
+    } catch (err) {
+        res.status(500).json({
+            message: err
+        });
+    }
+};
+
 module.exports.addLocation = async (req, res) => {
     try {
         const location = new locationModel({

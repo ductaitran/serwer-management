@@ -10,6 +10,8 @@ const { isLocationNameAvailable, isDistrictNameAvailable } = require('../middlew
 
 // Get routes
 router.get('/', locationController.getAll);
+router.get('/:city', locationController.getOne);
+
 
 // Post routes
 router.post('/', isLocationNameAvailable, locationController.addLocation);
