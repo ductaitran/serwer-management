@@ -5,22 +5,19 @@ import socketIOClient from 'socket.io-client';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 
 import ScheduleTable from '../../components/schedule-table/schedule-table.component';
 import ScheduleContainer from '../../components/schedule-container/schedule-container.component';
 
 import { scheduleService } from '../../services/schedule.service';
 
-import { Slider, Switch, Image } from 'antd';
-// import "antd/lib/slider/style/index.css";
+import { Slider, Switch } from 'antd';
+
 import 'antd/lib/slider/style/index.css';
 import 'antd/lib/switch/style/index.css';
 import 'antd/lib/grid/style/index.css';
 import 'antd/lib/image/style/index.css';
-// import 'antd/lib/column/style/index.css';
-// import "antd/lib/slider/switch/index.css";
-// import 'antd/dist/antd.css';
+
 import './control.styles.css';
 
 
@@ -219,7 +216,6 @@ export default function ControlPage({ ...props }) {
 			console.log('connected');
 			handleMqttSubscribe();
 		}
-
 	}, [mqttClient])
 
 	useEffect(() => {
@@ -312,13 +308,6 @@ export default function ControlPage({ ...props }) {
 						<Grid item xs={12}>
 							<div className={socketEnable ? "video-section-enable" : "video-section-disable"}>
 								<img id='image' src={imgSrc} alt="" />
-								{/* <Image
-									width={200}
-									src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png?x-oss-process=image/blur,r_50,s_50/quality,q_1/resize,m_mfit,h_200,w_200"
-									preview={{
-										src: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-									}}
-								/> */}
 							</div>
 						</Grid>
 					</Grid>
