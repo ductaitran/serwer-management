@@ -159,7 +159,7 @@ export default function ControlPage({ ...props }) {
 			})
 		}
 
-	}, [socketData, socket])
+	}, [socket])
 
 	useEffect(() => {
 		if (socketEnable) {
