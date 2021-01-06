@@ -12,14 +12,16 @@ import ScheduleContainer from '../../components/schedule-container/schedule-cont
 
 import { scheduleService } from '../../services/schedule.service';
 
-import { Slider, Switch } from 'antd';
+import { Slider, Switch, Image } from 'antd';
 // import "antd/lib/slider/style/index.css";
 import 'antd/lib/slider/style/index.css';
 import 'antd/lib/switch/style/index.css';
 import 'antd/lib/grid/style/index.css';
+import 'antd/lib/image/style/index.css';
 // import 'antd/lib/column/style/index.css';
 // import "antd/lib/slider/switch/index.css";
 // import 'antd/dist/antd.css';
+import './control.styles.css';
 
 
 import { ReactComponent as UpButton } from '../../assets/up-arrow.svg';
@@ -138,11 +140,22 @@ export default function ControlPage({ ...props }) {
 	////////////////////////////////////////////////
 
 	// handle socket actions
+	const [imgSrc, setImgSrc] = useState("https://i.imgur.com/BJ8MUCG.jpg");
 	useEffect(() => {
 		if (socket !== null) {
-			socket.on('imageSend', (data) => {
+			socket.on(`${location.state.sewer._id}/imageSend`, (data) => {
 				setSocketData(data);
-				// console.log(socketData);
+				console.log(socketData);
+
+				// update image
+				let strImg = '';
+				let bytes = new Uint8Array(data);
+				let length = bytes.byteLength;
+				for (let i = 0; i < bytes.byteLength; i++) {
+					strImg += String.fromCharCode(bytes[i]);
+				}
+				setImgSrc(`data:image/jpeg;base64,${strImg}`);
+				console.log(imgSrc);								
 			})
 		}
 
@@ -165,12 +178,13 @@ export default function ControlPage({ ...props }) {
 			if (socket) {
 				socket.disconnect();
 				setSocket(null);
-				setSocketData(0);
+				setSocketData('');
 			}
 		}
 	}
 	function handleSocketSwitch(checked) {
 		setSocketEnable(checked);
+		setImgSrc("https://i.imgur.com/BJ8MUCG.jpg");
 	}
 
 	////////////////////////////////////////////////
@@ -181,7 +195,7 @@ export default function ControlPage({ ...props }) {
 	const infoTopic = location.state.sewer._id + "/info";
 	useEffect(() => {
 		console.log(mqttEnable);
-		if (mqttEnable) {			
+		if (mqttEnable) {
 			let options = {
 				protocol: 'http',
 				// clientId uniquely identifies client
@@ -189,14 +203,6 @@ export default function ControlPage({ ...props }) {
 				clientId: location.state.sewer._id + "_client"
 			};
 			setMqttClient(mqtt.connect('http://localhost:4000', options));
-
-			// // subscribe topic
-			// if (mqttClient !== null) {
-			// 	console.log('connected');
-			// 	// console.log(mqttMessage);
-			// 	// console.log(mqttClient);
-			// 	handleMqttSubscribe();
-			// }
 		} else {
 			if (mqttClient !== null) {
 				mqttClient.end(true)
@@ -213,14 +219,14 @@ export default function ControlPage({ ...props }) {
 			console.log('connected');
 			handleMqttSubscribe();
 		}
-		
+
 	}, [mqttClient])
 
 	useEffect(() => {
 		console.log(mqttMessage);
 		console.log(mqttClient);
-		if (mqttClient !== null) {		
-			mqttClient.on('message', function (topic, message) {				
+		if (mqttClient !== null) {
+			mqttClient.on('message', function (topic, message) {
 
 				// update mqttMessage state
 				setMqttMessage(mqttMessage.concat(message.toString()));
@@ -241,7 +247,7 @@ export default function ControlPage({ ...props }) {
 		}
 	}, [mqttMessage])
 
-	function handleMqttSubscribe() {		
+	function handleMqttSubscribe() {
 		console.log('control topic: ' + controlTopic);
 		console.log('info topic: ' + infoTopic);
 
@@ -253,7 +259,7 @@ export default function ControlPage({ ...props }) {
 		// mqttClient.subscribe(infoTopic);
 	}
 
-	function handleMqttSwitch(checked) {		
+	function handleMqttSwitch(checked) {
 		setMqttEnable(checked);
 	}
 
@@ -261,7 +267,9 @@ export default function ControlPage({ ...props }) {
 		setDistSliderValue(value);
 	}
 
+	const [btnActive, setBtnActive] = useState('');
 	function handleOpenSewer(e) {
+		setBtnActive(e.currentTarget.getAttribute("id"))
 		if (mqttClient !== null) {
 			// mqttClient.publish('controller', 'up')
 			mqttClient.publish(location.state.sewer._id + "/controller", `{${distSliderValue}, 1}`)
@@ -270,6 +278,7 @@ export default function ControlPage({ ...props }) {
 	}
 
 	function handleCloseSewer(e) {
+		setBtnActive(e.currentTarget.getAttribute("id"))
 		if (mqttClient !== null) {
 			// mqttClient.publish('controller', 'down')
 			mqttClient.publish(location.state.sewer._id + "/controller", `{${distSliderValue}, 0}`)
@@ -278,6 +287,7 @@ export default function ControlPage({ ...props }) {
 	}
 
 	function handleStopSewer(e) {
+		setBtnActive(e.currentTarget.getAttribute("id"))
 		if (mqttClient !== null) {
 			// mqttClient.publish('controller', 'stop')
 			mqttClient.publish(location.state.sewer._id + "/controller", `{${distSliderValue}, 2}`)
@@ -294,11 +304,21 @@ export default function ControlPage({ ...props }) {
 				<Grid item xs={6}>
 					<Grid container spacing={3}>
 						<Grid item xs={12}>
-							<Switch defaultChecked={false} onChange={handleSocketSwitch} />
+							<Grid container justify="center" spacing={2}>
+								<Grid item ><Switch defaultChecked={false} onChange={handleSocketSwitch} /></Grid>
+								<Grid item ><label>Streaming</label></Grid>
+							</Grid>
 						</Grid>
 						<Grid item xs={12}>
-							<div className="video-section">
-								<img style={{ maxWidth: "10 0%", height: "500px" }} id='image' src="https://i.imgur.com/BJ8MUCG.jpg" alt="" />
+							<div className={socketEnable ? "video-section-enable" : "video-section-disable"}>
+								<img id='image' src={imgSrc} alt="" />
+								{/* <Image
+									width={200}
+									src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png?x-oss-process=image/blur,r_50,s_50/quality,q_1/resize,m_mfit,h_200,w_200"
+									preview={{
+										src: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+									}}
+								/> */}
 							</div>
 						</Grid>
 					</Grid>
@@ -349,9 +369,21 @@ export default function ControlPage({ ...props }) {
 								alignItems="center"
 								spacing={3}>
 
-								<Grid item xs={12}><UpButton onClick={handleOpenSewer} /></Grid>
-								<Grid item xs={12}><StopButton onClick={handleStopSewer} /></Grid>
-								<Grid item xs={12}><DownButton onClick={handleCloseSewer} /></Grid>
+								<Grid item xs={12}>
+									<UpButton id="open-btn"
+										className={(btnActive === 'open-btn' && mqttEnable) ? "actione-btn action-btn-active" : "action-btn action-btn-inActive"}
+										onClick={handleOpenSewer} />
+								</Grid>
+								<Grid item xs={12}>
+									<StopButton id="stop-btn"
+										className={(btnActive === 'stop-btn' && mqttEnable) ? "actione-btn action-btn-active" : "action-btn action-btn-inActive"}
+										onClick={handleStopSewer} />
+								</Grid>
+								<Grid item xs={12}>
+									<DownButton id="close-btn"
+										className={(btnActive === 'close-btn' && mqttEnable) ? "actione-btn action-btn-active" : "action-btn action-btn-inActive"}
+										onClick={handleCloseSewer} />
+								</Grid>
 								<Grid item xs={12}>
 									<button onClick={handleOpenViewSchedule}>Show Schedule</button>
 								</Grid>
