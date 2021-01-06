@@ -13,6 +13,7 @@ import ScheduleContainer from '../../components/schedule-container/schedule-cont
 import { scheduleService } from '../../services/schedule.service';
 
 import { Slider, Switch, Image } from 'antd';
+
 // import "antd/lib/slider/style/index.css";
 import 'antd/lib/slider/style/index.css';
 import 'antd/lib/switch/style/index.css';
@@ -219,7 +220,6 @@ export default function ControlPage({ ...props }) {
 			console.log('connected');
 			handleMqttSubscribe();
 		}
-
 	}, [mqttClient])
 
 	useEffect(() => {
