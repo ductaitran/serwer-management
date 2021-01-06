@@ -94,7 +94,7 @@ module.exports.updateUser = async (req, res) => {
                 password: hashedPassword,
                 location: {
                     city: req.body.location.city,
-                    district: req.body.district
+                    district: req.body.location.district
                 },
                 role: req.body.role
             }
