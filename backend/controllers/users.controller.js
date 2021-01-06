@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const sewerModel = require('../models/sewer.model');
 // Import models
 const userModel = require('../models/user.model');
 
@@ -78,7 +79,13 @@ module.exports.getAllRole = async (req, res) => {
 
 module.exports.updateUser = async (req, res) => {
     try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        let hashedPassword;
+        const userPassword = await userModel.find({email: req.params.userEmail}).distinct('password').lean();
+        if (req.body.password) {
+            hashedPassword = await bcrypt.hash(req.body.password, 10);
+        } else {
+            hashedPassword = userPassword.toString();
+        }
         const updatedUser = await userModel.updateOne({
             email: req.params.userEmail
         }, {

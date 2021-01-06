@@ -22,7 +22,10 @@ module.exports.checkLogin = async (req, res) => {
             email: userFound.email,
             role: userFound.role,
             created_date: userFound.created_date,
-            city: userFound.city,
+            location: {
+                city: userFound.location.city,
+                district: userFound.location.district
+            },
             accessToken: accessToken
         });
     } catch (err) {
