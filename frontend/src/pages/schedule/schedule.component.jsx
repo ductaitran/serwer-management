@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import ScheduleTable from '../../components/schedule-table/schedule-table.component';
 
 import { scheduleService } from '../../services/schedule.service';
-import { sewerService } from '../../services/sewer.service';
 
 import { Spin } from 'antd';
 import "antd/lib/spin/style/index.css";
@@ -21,10 +20,19 @@ export default function SchedulePage() {
                 setLoading(false);
             });
 
+        let timer = setInterval(() => {
+            scheduleService.getAll()
+                .then(response => {
+                    setSchedules(JSON.parse(response))                    
+                });
+        }, 5000)
+
         return () => {
             console.log('unmount');
+            clearInterval(timer);
+            timer = null
         }
-    }, [schedules.length, rerender])
+    }, []);
 
     const handleRemoveClick = (e) => {
         // remove schedule
@@ -43,7 +51,7 @@ export default function SchedulePage() {
 
     return (
         <div>
-            <h1>Schedule Page</h1>            
+            <h1>Schedule Page</h1>
             <ScheduleTable rows={schedules} renderRemove={false} handleRemove={handleRemoveClick} />
             <Spin size="large" spinning={loading} />
         </div>

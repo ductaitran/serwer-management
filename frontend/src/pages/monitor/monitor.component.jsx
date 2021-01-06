@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Select from 'react-select';
 import CardList from '../../components/card-list/card-list.component';
 import SearchBox from '../../components/search-box/search-box.component';
 
