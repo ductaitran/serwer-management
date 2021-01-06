@@ -92,7 +92,10 @@ module.exports.updateUser = async (req, res) => {
             $set: {
                 name: req.body.name,
                 password: hashedPassword,
-                city: req.body.city,
+                location: {
+                    city: req.body.location.city,
+                    district: req.body.district
+                },
                 role: req.body.role
             }
         });
