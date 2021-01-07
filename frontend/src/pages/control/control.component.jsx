@@ -11,7 +11,8 @@ import ScheduleContainer from '../../components/schedule-container/schedule-cont
 
 import { scheduleService } from '../../services/schedule.service';
 
-import { Slider, Switch } from 'antd';
+import { Slider, Switch, Button } from 'antd';
+import { VideoCameraOutlined, ControlOutlined, ScheduleOutlined } from '@ant-design/icons';
 
 import 'antd/lib/slider/style/index.css';
 import 'antd/lib/switch/style/index.css';
@@ -301,8 +302,9 @@ export default function ControlPage({ ...props }) {
 					<Grid container spacing={3}>
 						<Grid item xs={12}>
 							<Grid container justify="center" spacing={2}>
+								<Grid item ><VideoCameraOutlined style={{ fontSize: "28px" }} /></Grid>
 								<Grid item ><Switch defaultChecked={false} onChange={handleSocketSwitch} /></Grid>
-								<Grid item ><label>Streaming</label></Grid>
+
 							</Grid>
 						</Grid>
 						<Grid item xs={12}>
@@ -323,9 +325,7 @@ export default function ControlPage({ ...props }) {
 						<Grid item xs={12}>
 							<Grid container spacing={2}>
 
-								<Grid item>
-									<label>Control</label>
-								</Grid>
+								<Grid item ><ControlOutlined style={{ fontSize: "28px" }} /></Grid>
 								<Grid item>
 									<Switch defaultChecked={false} onChange={handleMqttSwitch} />
 								</Grid>
@@ -374,10 +374,12 @@ export default function ControlPage({ ...props }) {
 										onClick={handleCloseSewer} />
 								</Grid>
 								<Grid item xs={12}>
-									<button onClick={handleOpenViewSchedule}>Show Schedule</button>
+									<Button type="primary" onClick={handleOpenSetSchedule}>
+										Set Schedule <ScheduleOutlined style={{ fontSize: "18px" }} />
+									</Button>
 								</Grid>
 								<Grid item xs={12}>
-									<button onClick={handleOpenSetSchedule}>Set Schedule</button>
+									<Button type="dashed" onClick={handleOpenViewSchedule}>Show Schedule</Button>
 								</Grid>
 							</Grid>
 						</Grid>

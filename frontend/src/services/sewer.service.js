@@ -36,12 +36,15 @@ const requestDeleteOptions = {
     }
 }
 
-const requestUpdateOptions = {
-    method: 'PUT',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': authHeader()
-    }
+const requestUpdateOptions = (body) => {
+    return ({
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': authHeader()
+        },
+        body: body
+    })
 }
 
 function getAll() {    
@@ -60,6 +63,6 @@ function deleteById(id) {
     return fetch(`http://localhost:3000/api/sewers/${id}`, requestDeleteOptions).then(handleResponse);
 }
 
-function updateById(id) {
-    return fetch(`http://localhost:3000/api/sewers/${id}`, requestUpdateOptions).then(handleResponse);
+function updateById(id, body) {
+    return fetch(`http://localhost:3000/api/sewers/${id}`, requestUpdateOptions(body)).then(handleResponse);
 }
