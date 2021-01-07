@@ -5,7 +5,9 @@ export const userService = {
     getAll,
     getByEmail,
     register,
-    add
+    add,
+    deleteByEmail,
+    updateByEmail
 }
 
 const requestGetOptions = {
@@ -38,6 +40,25 @@ const requestRegisterOptions = (body) => {
     })
 }
 
+const requestDeleteOptions = {
+    method: 'DELETE',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': authHeader()
+    }
+}
+
+const requestPutOptions = (body) => {
+    return ({
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': authHeader()
+        },
+        body: body
+    })
+}
+
 function getAll() {
 
     // console.log(authHeader())
@@ -56,4 +77,14 @@ function register(body) {
 
 function add(body) {
     return fetch(`http://localhost:3000/api/users/`, requestPostOptions(body)).then(handleResponse);
+}
+
+// delete a user by id
+function deleteByEmail(email) {
+    return fetch(`http://localhost:3000/api/users/${email}`, requestDeleteOptions).then(handleResponse);
+}
+
+// update a user by email
+function updateByEmail(email, body) {
+    return fetch(`http://localhost:3000/api/users/${email}`, requestPutOptions(body)).then(handleResponse);
 }
