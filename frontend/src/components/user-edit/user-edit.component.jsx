@@ -33,7 +33,8 @@ export const UserEdit = ({...props}) => {
 	const [form] = Form.useForm();
 	const [userName, setUserName] = useState(props.user.name);
 	const [email, setEmail] = useState(props.user.email);
-	const [password, setPassword] = useState(props.user.password);
+    // const [password, setPassword] = useState(props.user.password);
+    const [password, setPassword] = useState('');
 	const [role, setRole] = useState(props.user.role);
 	const [city, setCity] = useState(() => {
         if (props.user.location) return props.user.location.city
@@ -64,13 +65,12 @@ export const UserEdit = ({...props}) => {
 		locationService.getAll()
 			.then(response => {
 				setLocations(JSON.parse(response))
-				console.log(locations)
+				// console.log(locations)
 			})
 	}, [])
 	
 
-	function handleSubmit() {
-		console.log('submit')
+	function handleSubmit() {		
 		console.log(body);
 		updateUser(body);
 		// form.resetFields();
@@ -79,7 +79,7 @@ export const UserEdit = ({...props}) => {
 	function updateUser(body) {
 		userService.updateByEmail(email, JSON.stringify(body))
 			.then(response => {
-				tata.success('Success', 'User Created', {
+				tata.success('Success', 'User updated', {
 					animate: 'slide'
 				});
 
@@ -164,10 +164,10 @@ export const UserEdit = ({...props}) => {
 				<Form.Item
 					label="Password"
                     name="password"
-                    initialValue="1234567"
+                    initialValue={password}
 					rules={[
 						{
-							required: true,
+							// required: true,
 							message: 'Please input password!',
 						},
 					]}
