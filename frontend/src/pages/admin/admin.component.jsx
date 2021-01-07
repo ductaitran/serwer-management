@@ -1,26 +1,33 @@
 import React, { useEffect, useState } from 'react';
 
+import { scheduleService } from '../../services/schedule.service';
+
 import { Tabs, Spin } from 'antd';
 import { UserAddOutlined, CaretLeftOutlined, AppstoreAddOutlined, CaretUpOutlined } from '@ant-design/icons';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 
+import { SewerTable } from '../../components/sewer-table/sewer-table.component';
 import SewerAdd from '../../components/sewer-add/sewer-add.component';
+
+import { UserTable } from '../../components/user-table/user-table.component';
 import UserAdd from '../../components/user-add/user-add.component';
 import { UserEdit } from '../../components/user-edit/user-edit.component';
-import ScheduleAdd from '../../components/schedule-add/schedule-add.component';
-import { ScheduleTable } from '../../components/schedule-table/schedule-table.component';
-import { UserTable } from '../../components/user-table/user-table.component';
 
-import { scheduleService } from '../../services/schedule.service';
+import { ScheduleTable } from '../../components/schedule-table/schedule-table.component';
+import ScheduleAdd from '../../components/schedule-add/schedule-add.component';
+
 import { userService } from '../../services/user.service';
+import { sewerService } from '../../services/sewer.service';
+import { SewerEdit } from '../../components/sewer-edit/sewer-edit.component';
 
 const { TabPane } = Tabs;
 
 const useStyles = makeStyles((theme) => ({
 	root: {
 		flexGrow: 1,
+		
 	},
 	paper: {
 		position: 'absolute',
@@ -33,8 +40,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AdminPage() {
-	const classes = useStyles();	
+	const classes = useStyles();
 	const [loading, setLoading] = useState(true);
+
+	// sewer data
+	const [sewers, setSewers] = useState([]);
+	const [renderSewerForm, setRenderSewerForm] = useState(false);
+	const [renderSewerEdit, setRenderSewerEdit] = useState(false);
 
 	// user data
 	const [users, setUsers] = useState([]);
@@ -46,9 +58,64 @@ export default function AdminPage() {
 	const [renderScheduleForm, setRenderScheduleForm] = useState(false);
 
 	/**
+	 * Sewer related
+	 */
+	useEffect(() => {
+		sewerService.getAll()
+			.then(response => {
+				setSewers(JSON.parse(response))
+				console.log(JSON.parse(response))
+				setLoading(false);
+			});
+
+		let timer = setInterval(() => {
+			sewerService.getAll()
+				.then(response => {
+					setSewers(JSON.parse(response))
+				});
+		}, 1000)
+
+		return () => {
+			console.log('unmount');
+			clearInterval(timer);
+			timer = null
+		}
+	}, [])
+
+	function handleRemoveSewerClick(e) {
+		let id = e.currentTarget.getAttribute("id");
+		console.log(id);
+
+		if (window.confirm('Are you sure you want to delete this item?')) {
+			sewerService.deleteById(id).then(response => {
+				console.log(response)
+			})
+		} else {
+			console.log('cancelled');
+		}
+	}
+
+	const [singleSewer, setSingleSewer] = useState({});
+	function handleEditSewerClick(e) {
+		setRenderSewerEdit(true);
+		setRenderSewerForm(false);
+		let id = e.currentTarget.getAttribute('id')
+
+		setSingleSewer({}); // reset state
+		sewerService.getById(id)
+			.then(response => {
+				setSingleSewer(JSON.parse(response))
+			});
+	}
+
+	function handleSewerRowSelect(e) {
+		// window.alert(e.currentTarget.getAttribute('id'));
+	}
+
+	/**
 	 * User related
 	 */
-	useEffect(() => {		
+	useEffect(() => {
 		userService.getAll()
 			.then(response => {
 				setUsers(JSON.parse(response))
@@ -71,13 +138,12 @@ export default function AdminPage() {
 	}, [])
 
 	function handleRemoveUserClick(e) {
-		// remove schedule
 		let id = e.currentTarget.getAttribute("id");
 		console.log(id);
 
 		if (window.confirm('Are you sure you want to delete this item?')) {
 			userService.deleteByEmail(id).then(response => {
-				console.log(response)				
+				console.log(response)
 			})
 		} else {
 			console.log('cancelled');
@@ -100,11 +166,10 @@ export default function AdminPage() {
 		// window.alert(e.currentTarget.getAttribute('id'));
 	}
 
-
 	/**
 	 * Schedule related
 	 */
-	useEffect(() => {		
+	useEffect(() => {
 		scheduleService.getAll()
 			.then(response => {
 				setSchedules(JSON.parse(response))
@@ -133,7 +198,7 @@ export default function AdminPage() {
 
 		if (window.confirm('Are you sure you want to delete this item?')) {
 			scheduleService.deleteById(id).then(response => {
-				console.log(response)				
+				console.log(response)
 			})
 		} else {
 			console.log('cancelled');
@@ -151,7 +216,47 @@ export default function AdminPage() {
 			<Tabs tabPosition='left'>
 				<TabPane tab="Sewer" key="1">
 
-					<Grid container spacing={6}>
+					<Grid container spacing={3}>
+						<Grid item xs={7}>
+							<Spin size="small" spinning={loading} />
+							<SewerTable size='small' rows={sewers}
+								renderRemove={true}
+								handleRemove={handleRemoveSewerClick}
+								renderEdit={true}
+								handleEdit={handleEditSewerClick}
+								handleSelect={handleSewerRowSelect}
+							/>
+						</Grid>
+
+						<Grid item xs={1} style={{ maxWidth: "25px" }}>
+							{(renderSewerForm || renderSewerEdit) ? (
+								<CaretLeftOutlined
+									style={{ fontSize: "20px" }}
+									onClick={(e) => {
+										e.preventDefault();
+										setRenderSewerForm(false);
+										setRenderSewerEdit(false)
+									}} />)
+								: (
+									<AppstoreAddOutlined
+										style={{ fontSize: "20px" }}
+										onClick={(e) => {
+											e.preventDefault();
+											setRenderSewerForm(true)
+										}} />)}
+						</Grid>
+
+						<Grid item xs={3}>
+							{renderSewerForm ? (<SewerAdd />) : null}
+
+							{(renderSewerEdit && Object.keys(singleSewer).length !== 0 && singleSewer.constructor === Object) ? (
+								<SewerEdit sewer={singleSewer} />
+							) : null}
+						</Grid>
+
+					</Grid>
+
+					{/* <Grid container spacing={6}>
 						<Grid item xs={6}>
 							<div>bla</div>
 						</Grid>
@@ -159,13 +264,13 @@ export default function AdminPage() {
 						<Grid item xs={6}>
 							<SewerAdd />
 						</Grid>
-					</Grid>
+					</Grid> */}
 
 				</TabPane>
 				<TabPane tab="User" key="2">
 
 					<Grid container spacing={3}>
-						<Grid item xs={6}>
+						<Grid item xs={7}>
 							<Spin size="small" spinning={loading} />
 							<UserTable size='small' rows={users}
 								renderRemove={true}
@@ -176,7 +281,7 @@ export default function AdminPage() {
 							/>
 						</Grid>
 
-						<Grid item xs={1}>
+						<Grid item xs={1} style={{ maxWidth: "25px" }}>
 							{(renderUserForm || renderUserEdit) ? (
 								<CaretLeftOutlined
 									style={{ fontSize: "20px" }}
@@ -189,7 +294,7 @@ export default function AdminPage() {
 									<UserAddOutlined
 										style={{ fontSize: "20px" }}
 										onClick={(e) => {
-											e.preventDefault(); 
+											e.preventDefault();
 											setRenderUserForm(true)
 										}} />)}
 						</Grid>
