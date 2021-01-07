@@ -37,8 +37,7 @@ export default function ScheduleAdd() {
     const [sewerArrEach, setSewerArrEach] = useState([]);
     const [sewer, setSewer] = useState('');   
     const [action, setAction] = useState(''); 
-    const [city, setCity] = useState('');
-    const [district, setDistrict] = useState('');
+    const [city, setCity] = useState('');    
     const [locations, setLocations] = useState([]);
     const [districtArr, setDistrictArr] = useState([]);
     const [body, setBody] = useState({});
@@ -116,8 +115,7 @@ export default function ScheduleAdd() {
         fetchDistrict(value);
     }
 
-    function handleDistrictChange(value) {
-        setDistrict(value);
+    function handleDistrictChange(value) {        
         setSewerArrEach(sewerArrAll.filter(sewer => 
             (sewer.location.city.includes(city)) &&
             (sewer.location.district.includes(value))))      

@@ -5,7 +5,7 @@ import { Form, Input, Button } from 'antd';
 // import 'antd/lib/select/style/index.css';
 import 'antd/dist/antd.css';
 
-import './user-add.styles.scss';
+import './user-edit.styles.scss';
 
 import { userService } from '../../services/user.service';
 import { locationService } from '../../services/location.service';
@@ -29,17 +29,23 @@ const tailLayout = {
 	},
 };
 
-export default function UserAdd() {
+export const UserEdit = ({...props}) => {
 	const [form] = Form.useForm();
-	const [userName, setUserName] = useState('');
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
-	const [role, setRole] = useState('');
-	const [city, setCity] = useState('');
-	const [district, setDistrict] = useState('');
+	const [userName, setUserName] = useState(props.user.name);
+	const [email, setEmail] = useState(props.user.email);
+	const [password, setPassword] = useState(props.user.password);
+	const [role, setRole] = useState(props.user.role);
+	const [city, setCity] = useState(() => {
+        if (props.user.location) return props.user.location.city
+        return ('')
+    });
+	const [district, setDistrict] = useState(() => {
+        if (props.user.location) return props.user.location.district
+        return ('')
+    });
 	const [locations, setLocations] = useState([]);
 	const [districtArr, setDistrictArr] = useState([]);
-	const [body, setBody] = useState({});
+    const [body, setBody] = useState({});
 
 	useEffect(() => {
 		setBody({
@@ -52,25 +58,26 @@ export default function UserAdd() {
 				district: district
 			}
 		})
-	}, [userName, email, password, role, city, district])
-
-	useEffect(() => {
+    }, [userName, email, password, role, city, district])
+    
+    useEffect(() => {
 		locationService.getAll()
 			.then(response => {
 				setLocations(JSON.parse(response))
 				console.log(locations)
 			})
 	}, [])
+	
 
 	function handleSubmit() {
 		console.log('submit')
 		console.log(body);
-		addUser();
-		form.resetFields();
+		updateUser(body);
+		// form.resetFields();
 	}
 
-	function addUser() {
-		userService.add(JSON.stringify(body))
+	function updateUser(body) {
+		userService.updateByEmail(email, JSON.stringify(body))
 			.then(response => {
 				tata.success('Success', 'User Created', {
 					animate: 'slide'
@@ -108,7 +115,7 @@ export default function UserAdd() {
 		setRole(value)
 	}
 
-	function handleCityChange(value) {
+	function handleCityChange(value) {        
 		setCity(value);
 		fetchDistrict(value);
 	}
@@ -128,7 +135,8 @@ export default function UserAdd() {
 
 				<Form.Item
 					label="Username"
-					name="userName"
+                    name="userName"                    
+                    initialValue={userName}
 					rules={[
 						{
 							required: true,
@@ -136,12 +144,13 @@ export default function UserAdd() {
 						},
 					]}
 				>
-					<Input onChange={handleUserNameChange} placeholder="Enter username" />
+					<Input defaultValue={userName} onChange={handleUserNameChange} />
 				</Form.Item>
 
 				<Form.Item
 					label="Email"
-					name="email"
+                    name="email"
+                    initialValue={email}                                 
 					rules={[
 						{
 							required: true,
@@ -149,12 +158,13 @@ export default function UserAdd() {
 						},
 					]}
 				>
-					<Input onChange={handleEmailChange} placeholder="Enter email" />
+					<Input disabled defaultValue={email} onChange={handleEmailChange} placeholder="Enter email" />
 				</Form.Item>
 
 				<Form.Item
 					label="Password"
-					name="password"
+                    name="password"
+                    initialValue="1234567"
 					rules={[
 						{
 							required: true,
@@ -163,12 +173,13 @@ export default function UserAdd() {
 					]}
 
 				>
-					<Input.Password onChange={handlePasswordChange} placeholder="Enter password" />
+					<Input.Password defaultValue={password} onChange={handlePasswordChange} placeholder="Enter password" />
 				</Form.Item>
 
 				<Form.Item
 					name="role"
-					label="Role"
+                    label="Role"
+                    initialValue={role}
 					rules={[
 						{
 							required: true,
@@ -177,7 +188,8 @@ export default function UserAdd() {
 				>
 					<Select
 						placeholder="Select role"
-						onChange={handleRoleChange}
+                        onChange={handleRoleChange}
+                        defaultValue={role}
 						style={{ width: "100px" }}
 						allowClear
 					>
@@ -190,7 +202,8 @@ export default function UserAdd() {
 
 				<Form.Item
 					name="city"
-					label="City"
+                    label="City"
+                    initialValue={city}
 					rules={[
 						{
 							required: (role === Role.Guest || role === Role.Admin) ? false : true,
@@ -199,7 +212,8 @@ export default function UserAdd() {
 				>
 					<Select
 						placeholder="Select city"
-						onChange={handleCityChange}
+                        onChange={handleCityChange}
+                        defaultValue={city}
 						style={{ width: "150px" }}
 						disabled={(role === Role.Guest || role === Role.Admin) ? true : false}
 						allowClear
@@ -214,7 +228,8 @@ export default function UserAdd() {
 
 				<Form.Item
 					name="district"
-					label="District"
+                    label="District"
+                    initialValue={district}
 					rules={[
 						{
 							required: (role === Role.Guest || role === Role.Admin) ? false : false,
@@ -223,7 +238,8 @@ export default function UserAdd() {
 				>
 					<Select
 						placeholder="Select district"
-						onChange={handleDistrictChange}
+                        onChange={handleDistrictChange}
+                        defaultValue={district}
 						style={{ width: "150px" }}
 						disabled={(role === Role.Guest || role === Role.Admin) ? true : false}
 						allowClear
@@ -235,18 +251,9 @@ export default function UserAdd() {
 					</Select>
 				</Form.Item>
 
-				{/* <Form.Item label="test">
-					<Input value={email} />
-					<Select value={email} onChange={}>
-						{(districtArr.length > 0) ? districtArr.map(district => (
-							<Option value={district}>{district}</Option>
-						)) : null}
-					</Select>
-				</Form.Item> */}
-
 				<Form.Item {...tailLayout}>
 					<Button type="primary" htmlType="submit">
-						Submit
+						Update
           </Button>
 				</Form.Item>
 			</Form>

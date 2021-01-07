@@ -8,12 +8,10 @@ import { Spin } from 'antd';
 import "antd/lib/spin/style/index.css";
 
 export default function SchedulePage() {
-    const [schedules, setSchedules] = useState([]);
-    const [rerender, setRerender] = useState(false);
+    const [schedules, setSchedules] = useState([]);    
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        setRerender(false);
+    useEffect(() => {        
         scheduleService.getAll()
             .then(response => {
                 setSchedules(JSON.parse(response))
@@ -34,25 +32,10 @@ export default function SchedulePage() {
         }
     }, []);
 
-    const handleRemoveClick = (e) => {
-        // remove schedule
-        let id = e.currentTarget.getAttribute("id");
-
-        if (window.confirm('Are you sure you want to delete this item?')) {
-            scheduleService.deleteById(id).then(response => {
-                console.log(response)
-                setRerender(true);
-            })
-        } else {
-            console.log('cancelled');
-        }
-
-    }
-
     return (
         <div>
             <h1>Schedule Page</h1>
-            <ScheduleTable rows={schedules} renderRemove={false} handleRemove={handleRemoveClick} />
+            <ScheduleTable rows={schedules} renderRemove={false} />
             <Spin size="large" spinning={loading} />
         </div>
     )

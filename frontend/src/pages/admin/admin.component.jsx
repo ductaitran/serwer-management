@@ -8,6 +8,7 @@ import Grid from '@material-ui/core/Grid';
 
 import SewerAdd from '../../components/sewer-add/sewer-add.component';
 import UserAdd from '../../components/user-add/user-add.component';
+import { UserEdit } from '../../components/user-edit/user-edit.component';
 import ScheduleAdd from '../../components/schedule-add/schedule-add.component';
 import { ScheduleTable } from '../../components/schedule-table/schedule-table.component';
 import { UserTable } from '../../components/user-table/user-table.component';
@@ -32,13 +33,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AdminPage() {
-	const classes = useStyles();
-	const [rerender, setRerender] = useState(false);
+	const classes = useStyles();	
 	const [loading, setLoading] = useState(true);
 
 	// user data
 	const [users, setUsers] = useState([]);
 	const [renderUserForm, setRenderUserForm] = useState(false);
+	const [renderUserEdit, setRenderUserEdit] = useState(false);
 
 	// schedule data
 	const [schedules, setSchedules] = useState([]);
@@ -47,8 +48,7 @@ export default function AdminPage() {
 	/**
 	 * User related
 	 */
-	useEffect(() => {
-		setRerender(false);
+	useEffect(() => {		
 		userService.getAll()
 			.then(response => {
 				setUsers(JSON.parse(response))
@@ -58,7 +58,7 @@ export default function AdminPage() {
 
 		let timer = setInterval(() => {
 			userService.getAll()
-				.then(response => {					
+				.then(response => {
 					setUsers(JSON.parse(response))
 				});
 		}, 1000)
@@ -77,34 +77,34 @@ export default function AdminPage() {
 
 		if (window.confirm('Are you sure you want to delete this item?')) {
 			userService.deleteByEmail(id).then(response => {
-				console.log(response)
-				setRerender(true);
+				console.log(response)				
 			})
 		} else {
 			console.log('cancelled');
 		}
 	}
 
-	function handleOpenUserForm(e) {
-		e.preventDefault();
-		setRenderUserForm(true);
-	}
-
-	function handleCloseUserForm(e) {
-		e.preventDefault();
+	const [singleUser, setSingleUser] = useState({});
+	function handleEditUserClick(e) {
+		setRenderUserEdit(true);
 		setRenderUserForm(false);
+		let email = e.currentTarget.getAttribute('id')
+		setSingleUser({});
+		userService.getByEmail(email)
+			.then(response => {
+				setSingleUser(JSON.parse(response))
+			});
 	}
 
-	function handleEditUserClick() {
-		window.alert('edit  user');
+	function handleUserRowSelect(e) {
+		// window.alert(e.currentTarget.getAttribute('id'));
 	}
 
 
 	/**
 	 * Schedule related
 	 */
-	useEffect(() => {
-		setRerender(false);
+	useEffect(() => {		
 		scheduleService.getAll()
 			.then(response => {
 				setSchedules(JSON.parse(response))
@@ -114,7 +114,7 @@ export default function AdminPage() {
 		let timer = setInterval(() => {
 			scheduleService.getAll()
 				.then(response => {
-					console.log('fetch')
+					// console.log('fetch')
 					setSchedules(JSON.parse(response))
 				});
 		}, 1000)
@@ -133,22 +133,17 @@ export default function AdminPage() {
 
 		if (window.confirm('Are you sure you want to delete this item?')) {
 			scheduleService.deleteById(id).then(response => {
-				console.log(response)
-				setRerender(true);
+				console.log(response)				
 			})
 		} else {
 			console.log('cancelled');
 		}
 	}
 
-	function handleOpenScheduleForm(e) {
+	function handleToggleScheduleForm(e) {
 		e.preventDefault();
-		setRenderScheduleForm(true);
-	}
-
-	function handleCloseScheduleForm(e) {
-		e.preventDefault();
-		setRenderScheduleForm(false);
+		setRenderUserEdit(false);
+		setRenderScheduleForm(!renderScheduleForm);
 	}
 
 	return (
@@ -177,19 +172,36 @@ export default function AdminPage() {
 								handleRemove={handleRemoveUserClick}
 								renderEdit={true}
 								handleEdit={handleEditUserClick}
+								handleSelect={handleUserRowSelect}
 							/>
 						</Grid>
 
 						<Grid item xs={1}>
-							{renderUserForm ?
-								(<CaretLeftOutlined style={{fontSize:"20px"}} onClick={handleCloseUserForm}/>)
-								:
-								(<UserAddOutlined style={{fontSize:"20px"}} onClick={handleOpenUserForm}/>)}
+							{(renderUserForm || renderUserEdit) ? (
+								<CaretLeftOutlined
+									style={{ fontSize: "20px" }}
+									onClick={(e) => {
+										e.preventDefault();
+										setRenderUserForm(false);
+										setRenderUserEdit(false)
+									}} />)
+								: (
+									<UserAddOutlined
+										style={{ fontSize: "20px" }}
+										onClick={(e) => {
+											e.preventDefault(); 
+											setRenderUserForm(true)
+										}} />)}
 						</Grid>
 
 						<Grid item xs={3}>
 							{renderUserForm ? (<UserAdd />) : null}
+
+							{(renderUserEdit && Object.keys(singleUser).length !== 0 && singleUser.constructor === Object) ? (
+								<UserEdit user={singleUser} />
+							) : null}
 						</Grid>
+
 					</Grid>
 
 				</TabPane>
@@ -207,9 +219,9 @@ export default function AdminPage() {
 
 						<Grid item xs={3}>
 							{renderScheduleForm ?
-								(<CaretUpOutlined style={{fontSize:"20px"}} onClick={handleCloseScheduleForm}/>)
+								(<CaretUpOutlined style={{ fontSize: "20px" }} onClick={handleToggleScheduleForm} />)
 								:
-								(<AppstoreAddOutlined style={{fontSize:"20px"}} onClick={handleOpenScheduleForm}/>)}								
+								(<AppstoreAddOutlined style={{ fontSize: "20px" }} onClick={handleToggleScheduleForm} />)}
 
 						</Grid>
 
