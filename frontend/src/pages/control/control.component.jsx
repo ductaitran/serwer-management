@@ -86,7 +86,7 @@ export default function ControlPage({ ...props }) {
 	// mqtt
 	const [mqttEnable, setMqttEnable] = useState(false);
 	const [mqttClient, setMqttClient] = useState(null);
-	const [mqttMessage, setMqttMessage] = useState([]);
+	const [mqttMessage, setMqttMessage] = useState('');
 	const [mqttDistanceMessage, setMqttDistanceMessage] = useState(0);
 	const [mqttModeMessage, setMqttModeMessage] = useState('');
 	const [mqttStateMessage, setMqttStateMessage] = useState('');
@@ -142,18 +142,19 @@ export default function ControlPage({ ...props }) {
 	useEffect(() => {
 		if (socket !== null) {
 			socket.on(`${location.state.sewer._id}/imageSend`, (data) => {
+				console.log(data);
 				setSocketData(data);
-				console.log(socketData);
+				// console.log(socketData);
 
 				// update image
 				let strImg = '';
 				let bytes = new Uint8Array(data);
-				let length = bytes.byteLength;
 				for (let i = 0; i < bytes.byteLength; i++) {
 					strImg += String.fromCharCode(bytes[i]);
 				}
 				setImgSrc(`data:image/jpeg;base64,${strImg}`);
-				console.log(imgSrc);
+				// console.log(strImg);
+				// console.log(imgSrc);
 			})
 		}
 
@@ -191,7 +192,7 @@ export default function ControlPage({ ...props }) {
 	// init mqtt connection
 	const controlTopic = location.state.sewer._id + "/controller";
 	const infoTopic = location.state.sewer._id + "/info";
-	useEffect(() => {
+	useEffect(() => {	// handle create client, end client
 		console.log(mqttEnable);
 		if (mqttEnable) {
 			let options = {
@@ -200,60 +201,64 @@ export default function ControlPage({ ...props }) {
 				// choose any string you wish
 				clientId: location.state.sewer._id + "_client"
 			};
-			setMqttClient(mqtt.connect('http://localhost:4000', options));
+			setMqttClient(mqtt.connect('http://localhost:4000', options));			
 		} else {
 			if (mqttClient !== null) {
-				mqttClient.end(true)
-				setMqttClient(null);
-				setMqttMessage([]);
+				handleMqttUnSubscribe();
+				mqttClient.end(true, () => {setMqttClient(null)})				
+				setMqttMessage('');
 			}
 		}
 	}, [mqttEnable])
 
-	useEffect(() => {
+	useEffect(() => { // handle subscibe topics
 		console.log(mqttClient);
-		// subscribe topic
 		if (mqttClient !== null) {
-			console.log('connected');
 			handleMqttSubscribe();
+			// mqttClient.on('connect', (connack) => {
+			// 	handleMqttSubscribe();
+			// })
 		}
 	}, [mqttClient])
 
+	useEffect(() => {		
+		console.log('new message');
+		// subscribe topic
+		if (mqttClient !== null) {			
+			mqttClient.on('message', function (topic, message) {
+				if (topic.toString() === infoTopic) {
+					setMqttMessage(message.toString());
+				}
+			})
+		} else {console.log('disconnected')}
+	}, [mqttClient, mqttMessage])
+
 	useEffect(() => {
 		console.log(mqttMessage);
-		console.log(mqttClient);
-		if (mqttClient !== null) {
-			mqttClient.on('message', function (topic, message) {
-
-				// update mqttMessage state
-				setMqttMessage(mqttMessage.concat(message.toString()));
-				// setMqttMessage(topic.toString())
-				console.log(mqttMessage);
-				// console.log(topic.toString());
-
-				if (topic.toString() === infoTopic) {
-					let info = message.toString();
-					let infoLength = info.length;
-					let infoExtract = info.slice(1, infoLength - 1);
-					infoExtract = infoExtract.split(',');
-					setMqttDistanceMessage(infoExtract[0]); //current distance
-					setMqttModeMessage(infoExtract[1]); // mode
-					setMqttStateMessage(infoExtract[2]); // state
-				}
-			});
-		}
+		let infoLength = mqttMessage.length;
+		let infoExtract = mqttMessage.slice(1, infoLength - 1);
+		infoExtract = infoExtract.split(',');
+		setMqttDistanceMessage(infoExtract[0]); //current distance
+		setMqttModeMessage(infoExtract[1]); // mode
+		setMqttStateMessage(infoExtract[2]); // state
 	}, [mqttMessage])
 
 	function handleMqttSubscribe() {
-		console.log('control topic: ' + controlTopic);
-		console.log('info topic: ' + infoTopic);
+		// console.log('control topic: ' + controlTopic);
+		// console.log('info topic: ' + infoTopic);
 
 		// subcribes
 		mqttClient.subscribe([controlTopic, infoTopic], (err, granted) => {
-			console.log(err);
+			console.log('err: ' + err);
 			console.log(granted);
 		});
-		// mqttClient.subscribe(infoTopic);
+	}
+
+	function handleMqttUnSubscribe() {	
+		// unsubcribes
+		mqttClient.unsubscribe([controlTopic, infoTopic], (err) => {
+			console.log('err: ' + err);			
+		});
 	}
 
 	function handleMqttSwitch(checked) {
@@ -338,7 +343,7 @@ export default function ControlPage({ ...props }) {
 								<Grid item xs={12}>
 									<div>
 										<label>Current distance: {mqttDistanceMessage} cm</label>
-										<Slider min={0} max={20} tooltipVisible={false} disabled={true} />
+										<Slider min={0} max={20} value={mqttDistanceMessage} tooltipVisible={false} disabled={true} />
 									</div>
 								</Grid>
 								<Grid item xs={12}>
