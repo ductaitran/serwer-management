@@ -2,14 +2,15 @@ const scheduleModel = require('../models/schedule.model');
 const sewerModel = require('../models/sewer.model');
 const Paho = require('./paho-mqtt');
 
-var schedules;
-var haveNewSchedule;
+var schedules, haveNewSchedule;
+var isDangerTopicList = [],
+    dangerTopicList = [];
 
 module.exports.startMQTTConnection = async () => {
 
     // Define hostname, port number and topic
-    // var host = "104.155.233.176";
-    var host = "localhost";
+    var host = "104.155.233.176";
+    // var host = "localhost";
     var port = "4000";
 
     // Fetch schedule data
@@ -23,6 +24,7 @@ module.exports.startMQTTConnection = async () => {
 
     // Set callback handlers
     client.onConnectionLost = onConnectionLost;
+    client.onMessageArrived = onMessageArrived;
 
     // Connect the client, if successful, call onConnect function
     client.connect({
@@ -37,6 +39,29 @@ function onConnectionLost(responseObject) {
     }
 }
 
+// Called when a message arrives
+function onMessageArrived(message) {
+    if (message.destinationName == "is_danger") {
+        let lastMessage = message.payloadString;
+        if (lastMessage === "1") {
+            sendMessage("1", "danger")
+        } else if (lastMessage === "0") {
+            sendMessage("0", "danger")
+        };
+    };
+
+    for (let i = 0; i < isDangerTopicList.length; i++) {
+        if (isDangerTopicList[i] == message.destinationName) {
+            let lastMessage = message.payloadString;
+            if (lastMessage === "1") {
+                sendMessage("1", dangerTopicList[i]);
+            } else if (lastMessage === "0") {
+                sendMessage("0", dangerTopicList[i]);
+            };
+        };
+    };
+}
+
 // Called when the client connects
 async function onConnect() {
     // Check connection
@@ -48,11 +73,23 @@ async function onConnect() {
     // Subcribe to the topic that have real sewer
     client.subscribe(topic);
     console.log("subcribe to topic: " + topic);
+    client.subscribe("danger");
+    client.subscribe("is_danger");
+    console.log("subcribe to topic: danger");
+    console.log("subcribe to topic: is_danger");
     sewerList.forEach(element => {
-        let temp = "/" + element + "/controller";
-    // Subscribe to all sewer's topic in database
+        let temp = element + "/controller";
+        let temp1 = element + "/danger";
+        let temp2 = element + "/is_danger";
+        isDangerTopicList.push(temp1);
+        dangerTopicList.push(temp2);
+        // Subscribe to all sewer's topic in database
         client.subscribe(temp);
+        client.subscribe(temp1);
+        client.subscribe(temp2);
         console.log("subcribe to topic: " + temp);
+        console.log("subcribe to topic: " + temp1);
+        console.log("subcribe to topic: " + temp2);
     });
 }
 
@@ -86,7 +123,7 @@ module.exports.sendMessageOnSchedule = async () => {
 
     // console.log("Checking schedules....");
     if (schedules.length > 0) {
-        schedules.forEach( async (item, index) => {
+        schedules.forEach(async (item, index) => {
             let scheduleId = item['id'];
             let scheduleDateArray = item['date'].split('-');
             let scheduleTimeArray = item['time'].split(':');
@@ -101,15 +138,16 @@ module.exports.sendMessageOnSchedule = async () => {
                     if (scheduleSewer == "sewerOnTop10") {
                         sendMessage(`{0,${scheduleAction}}`, "controller");
                         schedules.splice(index, 1);
-                    }
-                    else {
-                        sendMessage(`{0,${scheduleAction}}`, `/${scheduleSewer}/controller`);
+                    } else {
+                        sendMessage(`{0,${scheduleAction}}`, `${scheduleSewer}/controller`);
                         schedules.splice(index, 1);
                     }
 
                     // Remove schedule from database
-                    const removedSchedule = await scheduleModel.deleteOne({_id: scheduleId});
-                    if(removedSchedule) {
+                    const removedSchedule = await scheduleModel.deleteOne({
+                        _id: scheduleId
+                    });
+                    if (removedSchedule) {
                         console.log("Remove schedule successful!");
                     }
                 }
