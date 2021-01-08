@@ -139,9 +139,20 @@ export default function ControlPage({ ...props }) {
 
 	// handle socket actions
 	const [imgSrc, setImgSrc] = useState("https://i.imgur.com/BJ8MUCG.jpg");
+	var socketChannel = `${location.state.sewer._id}/imageSend`;
+
+	// check real sewer
+	if (location.state.sewer._id == "sewerOnTop10") {
+		socketChannel = "imageSend";
+	}
+
+	if (location.state.sewer._id == "sewerOnTop10") {
+		socketChannel = "imageSend";
+	} else { }
+
 	useEffect(() => {
 		if (socket !== null) {
-			socket.on(`${location.state.sewer._id}/imageSend`, (data) => {
+			socket.on(socketChannel, (data) => {
 				console.log(data);
 				setSocketData(data);
 				// console.log(socketData);
@@ -190,8 +201,15 @@ export default function ControlPage({ ...props }) {
 
 	// Sewer control plane
 	// init mqtt connection
-	const controlTopic = location.state.sewer._id + "/controller";
-	const infoTopic = location.state.sewer._id + "/info";
+	var controlTopic = location.state.sewer._id + "/controller";;
+	var infoTopic = location.state.sewer._id + "/info";
+	
+	// check real sewer
+	if (location.state.sewer._id == "sewerOnTop10") {
+		controlTopic = "controller";
+		infoTopic = "info";
+	}
+
 	useEffect(() => {	// handle create client, end client
 		console.log(mqttEnable);
 		if (mqttEnable) {
@@ -201,11 +219,11 @@ export default function ControlPage({ ...props }) {
 				// choose any string you wish
 				clientId: location.state.sewer._id + "_client"
 			};
-			setMqttClient(mqtt.connect('http://localhost:4000', options));			
+			setMqttClient(mqtt.connect('http://localhost:4000', options));
 		} else {
 			if (mqttClient !== null) {
 				handleMqttUnSubscribe();
-				mqttClient.end(true, () => {setMqttClient(null)})				
+				mqttClient.end(true, () => { setMqttClient(null) })
 				setMqttMessage('');
 			}
 		}
@@ -221,16 +239,16 @@ export default function ControlPage({ ...props }) {
 		}
 	}, [mqttClient])
 
-	useEffect(() => {		
+	useEffect(() => {
 		console.log('new message');
 		// subscribe topic
-		if (mqttClient !== null) {			
+		if (mqttClient !== null) {
 			mqttClient.on('message', function (topic, message) {
 				if (topic.toString() === infoTopic) {
 					setMqttMessage(message.toString());
 				}
 			})
-		} else {console.log('disconnected')}
+		} else { console.log('disconnected') }
 	}, [mqttClient, mqttMessage])
 
 	useEffect(() => {
@@ -254,10 +272,10 @@ export default function ControlPage({ ...props }) {
 		});
 	}
 
-	function handleMqttUnSubscribe() {	
+	function handleMqttUnSubscribe() {
 		// unsubcribes
 		mqttClient.unsubscribe([controlTopic, infoTopic], (err) => {
-			console.log('err: ' + err);			
+			console.log('err: ' + err);
 		});
 	}
 
@@ -274,7 +292,7 @@ export default function ControlPage({ ...props }) {
 		setBtnActive(e.currentTarget.getAttribute("id"))
 		if (mqttClient !== null) {
 			// mqttClient.publish('controller', 'up')
-			mqttClient.publish(location.state.sewer._id + "/controller", `{${distSliderValue}, 1}`)
+			mqttClient.publish(controlTopic, `{${distSliderValue}, 1}`)
 			console.log(`{${distSliderValue}, 1}`);
 		}
 	}
@@ -283,7 +301,7 @@ export default function ControlPage({ ...props }) {
 		setBtnActive(e.currentTarget.getAttribute("id"))
 		if (mqttClient !== null) {
 			// mqttClient.publish('controller', 'down')
-			mqttClient.publish(location.state.sewer._id + "/controller", `{${distSliderValue}, 0}`)
+			mqttClient.publish(controlTopic, `{${distSliderValue}, 0}`)
 			console.log(`{${distSliderValue}, 0}`);
 		}
 	}
@@ -292,7 +310,7 @@ export default function ControlPage({ ...props }) {
 		setBtnActive(e.currentTarget.getAttribute("id"))
 		if (mqttClient !== null) {
 			// mqttClient.publish('controller', 'stop')
-			mqttClient.publish(location.state.sewer._id + "/controller", `{${distSliderValue}, 2}`)
+			mqttClient.publish(controlTopic, `{${distSliderValue}, 2}`)
 			console.log(`{${distSliderValue}, 2}`);
 		}
 	}

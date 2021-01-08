@@ -7,8 +7,10 @@
 const Paho = require('./paho-mqtt');
 global.WebSocket = require('ws');
 
-var controlTopic = "sewerOnTop5/controller"
-var infoTopic = "sewerOnTop5/info"
+// var controlTopic = "sewerOnTop5/controller"
+// var infoTopic = "sewerOnTop5/info"
+var controlTopic = "controller"
+var infoTopic = "info"
 var id = "sewerOnTop5"
 
 var client = new Paho.Client("localhost", 4000, id);

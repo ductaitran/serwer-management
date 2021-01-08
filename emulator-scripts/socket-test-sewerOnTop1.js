@@ -7,6 +7,7 @@
 var socket = require('socket.io-client')('http://localhost:3000');
 
 var streamChannel = 'sewerOnTop1/image-channel';
+// var streamChannel = 'image-channel';
 
 var counter = 0;
 
