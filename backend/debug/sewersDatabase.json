@@ -84,18 +84,38 @@
     "name": "sewerABC",
     "description": "A sewer",
     "location": {
-      "city": "Bac Lieu",
-      "district": "Vinh Loi"
+      "city": "Ben Tre",
+      "district": "Chau Thanh"
     },
     "__v": 0
   },
   {
     "_id": "sewerOnTop12",
     "name": "Sewer Thoi Lai",
-    "description": "Locate at downstream of Vam Nhon Lake",
+    "description": "A sewer in Can Tho",
     "location": {
       "city": "Can Tho",
       "district": "O Mon"
+    },
+    "__v": 0
+  },
+  {
+    "_id": "sewerOnTop8",
+    "name": "SewerM",
+    "description": "A sewer in Sai Gon",
+    "location": {
+      "city": "Sai Gon",
+      "district": "Binh Thanh"
+    },
+    "__v": 0
+  },
+  {
+    "_id": "sewerOnTop13",
+    "name": "Rach Ba Luu Sewer",
+    "description": "A sewer in Ben Tre",
+    "location": {
+      "city": "Ben Tre",
+      "district": "Chau Thanh"
     },
     "__v": 0
   }

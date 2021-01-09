@@ -49,7 +49,6 @@ function onMessageArrived(message) {
             sendMessage("0", "danger")
         };
     };
-
     for (let i = 0; i < isDangerTopicList.length; i++) {
         if (isDangerTopicList[i] == message.destinationName) {
             let lastMessage = message.payloadString;
@@ -81,8 +80,8 @@ async function onConnect() {
         let temp = element + "/controller";
         let temp1 = element + "/danger";
         let temp2 = element + "/is_danger";
-        isDangerTopicList.push(temp1);
-        dangerTopicList.push(temp2);
+        isDangerTopicList.push(temp2);
+        dangerTopicList.push(temp1);
         // Subscribe to all sewer's topic in database
         client.subscribe(temp);
         client.subscribe(temp1);

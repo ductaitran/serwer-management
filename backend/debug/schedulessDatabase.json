@@ -30,5 +30,21 @@
     "action": "0",
     "sewer": "sewerOnTop3",
     "__v": 0
+  },
+  {
+    "_id": "5ff607a7d16dd532e8e93a0d",
+    "date": "2021-01-04",
+    "time": "02:02",
+    "action": "1",
+    "sewer": "sewerOnTop8",
+    "__v": 0
+  },
+  {
+    "_id": "5ff6da1f8525ce07a86285e9",
+    "date": "2021-01-02",
+    "time": "16:53",
+    "action": "0",
+    "sewer": "sewerOnTop5",
+    "__v": 0
   }
 ]
