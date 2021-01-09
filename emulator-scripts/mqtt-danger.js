@@ -1,7 +1,7 @@
 const Paho = require('./paho-mqtt');
 global.WebSocket = require('ws');
 
-var client = new Paho.Client("localhost", 4000, "clientIdTest9");
+var client = new Paho.Client("localhost", 4000, "clientIdTest978");
 
 // set callback handlers
 client.onConnectionLost = onConnectionLost;
