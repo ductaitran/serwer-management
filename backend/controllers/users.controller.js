@@ -9,7 +9,7 @@ module.exports.getAll = async (req, res) => {
         res.json(users);
     } catch (err) {
         res.json({
-            message: err
+            message: "Database query error"
         });
     }
 };
@@ -22,7 +22,7 @@ module.exports.getOne = async (req, res) => {
         res.json(user);
     } catch (err) {
         res.json({
-            message: err
+            message: "Database query error"
         });
     };
 };
@@ -46,7 +46,7 @@ module.exports.addUser = async (req, res) => {
         });
     } catch (err) {
         res.json({
-            message: err
+            message: "Database query error"
         });
     }
 };
@@ -61,7 +61,7 @@ module.exports.deleteUser = async (req, res) => {
         });
     } catch (err) {
         res.json({
-            message: err
+            message: "Database query error"
         });
     }
 };
@@ -72,7 +72,7 @@ module.exports.getAllRole = async (req, res) => {
         res.status(200).json(roles);
     } catch (err) {
         res.status(500).json({
-            message: err
+            message: "Database query error"
         });
     }
 };
@@ -104,7 +104,7 @@ module.exports.updateUser = async (req, res) => {
         })
     } catch (err) {
         res.status(500).json({
-            message: err
+            message: "Database query error"
         });
     }
 };

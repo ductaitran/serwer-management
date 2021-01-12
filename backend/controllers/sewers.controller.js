@@ -23,7 +23,7 @@ module.exports.getAll = async (req, res) => {
         res.json(sewers);
     } catch (err) {
         res.json({
-            message: err
+            message: "Database query error"
         });
     }
 };
@@ -49,7 +49,7 @@ module.exports.getOne = async (req, res) => {
         // res.json(sewer);
     } catch (err) {
         res.json({
-            message: err
+            message: "Database query error"
         });
     };
 };
@@ -75,7 +75,7 @@ module.exports.getLimit = async (req, res) => {
         res.json(sewers);
     } catch (err) {
         res.status(500).json({
-            message: err
+            message: "Database query error"
         });
     }
 }
@@ -111,7 +111,7 @@ module.exports.addSewer = async (req, res) => {
         });
     } catch (err) {
         res.json({
-            message: err
+            message: "Database query error"
         });
     }
 };
@@ -136,7 +136,7 @@ module.exports.deleteSewer = async (req, res) => {
         });
     } catch (err) {
         res.status(500).json({
-            message: err
+            message: "Database query error"
         });
     }
 };
@@ -183,7 +183,7 @@ module.exports.updateSewer = async (req, res) => {
         });
     } catch (err) {
         res.status(500).json({
-            message: err
+            message: "Database query error"
         });
     }
 };
@@ -207,7 +207,7 @@ getSewerByLocation = async (city) => {
         return realSewerList;
     } catch (err) {
         res.status(500).json({
-            message: err
+            message: "Database query error"
         });
     }
 }
@@ -229,7 +229,7 @@ async function generateId() {
         return;
     } catch (err) {
         res.status(500).json({
-            message: err
+            message: "Database query error"
         });
     }
 };

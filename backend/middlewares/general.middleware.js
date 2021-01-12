@@ -10,7 +10,7 @@ module.exports.isLocationNameAvailable = async (req, res, next) => {
         next();
     } catch (err) {
         res.status(500).json({
-            message: err
+            message: "Database query error"
         });
     }
 };
@@ -24,7 +24,7 @@ module.exports.isDistrictNameAvailable = async (req, res, next) => {
         next();
     } catch (err) {
         res.status(500).json({
-            message: err
+            message: "Database query error"
         });
     }
 };

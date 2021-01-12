@@ -37,7 +37,8 @@
       {
         "name": "Binh Thanh",
         "haveSewers": [
-          "sewerOnTop5"
+          "sewerOnTop5",
+          "sewerOnTop8"
         ]
       },
       {
@@ -55,10 +56,25 @@
       {
         "name": "Vinh Loi",
         "haveSewers": [
-          "sewerOnTop4",
-          "sewerOnTop11"
+          "sewerOnTop4"
         ]
       }
     ]
+  },
+  {
+    "_id": "5ff4a4772d524d3f24c6395c",
+    "name": "Ben Tre",
+    "district": [
+      {
+        "haveSewers": [
+          "sewerOnTop13",
+          "sewerOnTop11",
+          "sewerOnTop11"
+        ],
+        "_id": "5ff4a95729bf9c35f0322bbe",
+        "name": "Chau Thanh"
+      }
+    ],
+    "__v": 0
   }
 ]

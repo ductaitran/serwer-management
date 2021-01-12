@@ -7,11 +7,12 @@
 const Paho = require('./paho-mqtt');
 global.WebSocket = require('ws');
 
-var controlTopic = "sewerOnTop1/controller"
-var infoTopic = "sewerOnTop1/info"
+var controlTopic = "sewerOnTop1/controller";
+var infoTopic = "sewerOnTop1/info";
+var connectionTopic = "sewerOnTop1/connection";
 var id = "sewerOnTop1"
 
-var client = new Paho.Client("localhost", 4000, id);
+var client = new Paho.Client("104.155.233.176", 4000, id);
 
 // set callback handlers
 client.onConnectionLost = onConnectionLost;
@@ -30,6 +31,10 @@ function onConnect() {
     client.subscribe(controlTopic)
     client.subscribe(infoTopic)
 
+    let message = new Paho.Message(`MQTT connected`);
+    message.destinationName = connectionTopic;
+    message.qos = 2;
+    client.send(message);
     // sendInfoMessage();
 }
 
@@ -61,7 +66,7 @@ function onMessageArrived(message) {
 }
 
 function sendInfoMessage(action) {
-    let mode = "remote";
+    let mode = "Remote mode";
     let state = ["Moving down", "Moving up", "Staying still"];
     // let interVal = 1;
 
