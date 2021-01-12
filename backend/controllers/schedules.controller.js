@@ -11,7 +11,7 @@ module.exports.getAll = async (req, res) => {
         res.status(200).json(schedules);
     } catch (err) {
         res.status(500).json({
-            message: err
+            message: "Database query error"
         });
     }
 };
@@ -21,7 +21,7 @@ module.exports.getOneBySewer = async (req, res) => {
         const schedules = await scheduleModel.find({sewer: req.params.sewerId}).populate('sewer', '_id name location.city location.district').lean();
         res.status(200).json(schedules);
     } catch (err) {
-        res.status(500).json({message: err});
+        res.status(500).json({message: "Database query error"});
     };
 };
 
@@ -38,7 +38,7 @@ module.exports.addSchedule = async (req, res) => {
         res.status(201).json({message: "Set schedule successful!"});
     } catch (err) {
         res.status(500).json({
-            message: err
+            message: "Database query error"
         });
     }
 };
@@ -48,6 +48,6 @@ module.exports.deleteSchedule = async (req, res) => {
         const removedSchedule = await scheduleModel.deleteOne({_id: req.params.scheduleId});
         res.status(200).json({message: "Delete schedule successful!"});
     } catch (err) {
-        res.status(500).json({message: err});
+        res.status(500).json({message: "Database query error"});
     }
 };

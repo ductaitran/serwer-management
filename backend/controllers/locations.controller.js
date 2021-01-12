@@ -7,7 +7,7 @@ module.exports.getAll = async (req, res) => {
         res.json(locations);
     } catch (err) {
         res.status(500).json({
-            message: err
+            message: "Database query error"
         });
     }
 };
@@ -18,7 +18,7 @@ module.exports.getDistrictInCity = async (req, res) => {
         res.json(location);
     } catch (err) {
         res.status(500).json({
-            message: err
+            message: "Database query error"
         });
     }
 };
@@ -35,7 +35,7 @@ module.exports.addLocation = async (req, res) => {
         });
     } catch (err) {
         res.status(500).json({
-            message: err
+            message: "Database query error"
         });
     }
 };
@@ -54,7 +54,7 @@ module.exports.addDistrict = async (req, res) => {
         });
     } catch (err) {
         res.status(500).json({
-            message: err
+            message: "Database query error"
         });
     }
 };
@@ -69,7 +69,7 @@ module.exports.deleteLocation = async (req, res) => {
         });
     } catch (err) {
         res.status(500).json({
-            message: err
+            message: "Database query error"
         });
     }
 };

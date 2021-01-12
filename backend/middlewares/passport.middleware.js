@@ -20,11 +20,11 @@ module.exports.isEmailAvailable = async (req, res, next) => {
         const userFound = await userModel.findOne({
             email: req.body.email
         });
-        if (userFound) return res.status(409).json({message: "User is not available"});
+        if (userFound) return res.status(409).json({message: "Email is not available"});
         next();
     } catch (err) {
         res.json({
-            message: err
+            message: "Database query error"
         });
     }
 };
